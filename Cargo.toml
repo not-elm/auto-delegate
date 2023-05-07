@@ -16,7 +16,7 @@ path = "tests/progress.rs"
 
 
 [dependencies]
-
+macros = {path = "macros"}
 
 [dev-dependencies]
 trybuild = "1.0.80"
