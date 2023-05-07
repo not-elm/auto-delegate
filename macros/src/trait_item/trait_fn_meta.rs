@@ -1,6 +1,6 @@
 use proc_macro2::Ident;
 use syn::__private::TokenStream2;
-use syn::{ReturnType, TraitItemFn, Type, TypePath, TypeTuple};
+use syn::{ReturnType, TraitItemFn, Type, TypePath, TypeReference, TypeTuple};
 
 use crate::trait_item::trait_fn_inputs::TraitFnInputs;
 
@@ -48,6 +48,7 @@ fn return_ty(ty: &Type) -> Option<TokenStream2> {
     match ty {
         Type::Path(path) => Some(output_path(path)),
         Type::Tuple(tuple) => output_tuple(tuple),
+        Type::Reference(reference) => Some(output_ref(reference)),
         _ => None,
     }
 }
@@ -63,6 +64,17 @@ fn output_tuple(tuple: &TypeTuple) -> Option<TokenStream2> {
     let first = tuple.elems.first()?;
     let last = tuple.elems.last()?;
     Some(quote::quote! {(#first, #last)})
+}
+
+
+fn output_ref(reference: &TypeReference) -> TokenStream2 {
+    let elem = &reference.elem;
+
+    if reference.mutability.is_some() {
+        quote::quote! {&mut #elem}
+    } else {
+        quote::quote! {& #elem}
+    }
 }
 
 
