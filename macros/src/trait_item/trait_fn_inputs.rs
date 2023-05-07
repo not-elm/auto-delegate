@@ -74,10 +74,11 @@ fn expand_pat_type(pat_type: &PatType) -> syn::Result<TokenStream2> {
 
 
 fn reference_receiver(ty_ref: &TypeReference) -> TokenStream2 {
+    let life_time = &ty_ref.lifetime;
     if ty_ref.mutability.is_none() {
-        quote::quote! {&self}
+        quote::quote! {&#life_time self}
     } else {
-        quote::quote! {&mut self}
+        quote::quote! {&#life_time mut self}
     }
 }
 

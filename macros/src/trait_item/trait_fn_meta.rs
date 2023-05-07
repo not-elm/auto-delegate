@@ -69,11 +69,11 @@ fn output_tuple(tuple: &TypeTuple) -> Option<TokenStream2> {
 
 fn output_ref(reference: &TypeReference) -> TokenStream2 {
     let elem = &reference.elem;
-
+    let life_time = &reference.lifetime;
     if reference.mutability.is_some() {
-        quote::quote! {&mut #elem}
+        quote::quote! {&#life_time mut #elem}
     } else {
-        quote::quote! {& #elem}
+        quote::quote! {&#life_time #elem}
     }
 }
 
