@@ -18,9 +18,9 @@ pub fn delegate_trait(attr: TokenStream, input: TokenStream) -> TokenStream {
     expand_unit(input, output)
 }
 
-#[proc_macro_attribute]
-pub fn delegate(attr: TokenStream, input: TokenStream) -> TokenStream {
-    let output = expand_delegate(attr, input.clone());
+#[proc_macro_derive(Delegate, attributes(by))]
+pub fn delegate(input: TokenStream) -> TokenStream {
+    let output = expand_delegate(input.clone());
     expand_unit(input, output)
 }
 

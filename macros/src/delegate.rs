@@ -6,19 +6,19 @@ use syn::parse::Parser;
 
 use crate::ident::generate_delegate_impl_macro_name;
 
-pub fn expand_delegate(args: TokenStream, input: TokenStream) -> proc_macro2::TokenStream {
-    match try_expand_delegate(args, input) {
+pub fn expand_delegate(input: TokenStream) -> proc_macro2::TokenStream {
+    match try_expand_delegate(input) {
         Ok(output) => output,
         Err(error) => error.to_compile_error(),
     }
 }
 
-fn try_expand_delegate(
-    args: TokenStream,
-    input: TokenStream,
-) -> syn::Result<proc_macro2::TokenStream> {
+fn try_expand_delegate(input: TokenStream) -> syn::Result<proc_macro2::TokenStream> {
     let item_struct = syn::parse::<ItemStruct>(input)?;
-    let args = TokenStream2::from(args);
+
+    dbg!(item_struct.clone());
+    todo!();
+    let args = TokenStream2::from(input.clone());
 
     let path_args = <syn::punctuated::Punctuated<syn::Path, syn::Token![,]>>::parse_terminated
         .parse(args.into())?;

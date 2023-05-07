@@ -16,6 +16,7 @@ trait DummyNumber {
 
 struct Impl {}
 
+#[allow(unused)]
 fn main() {
     impl_delegate_dummynumber!(Impl);
 
