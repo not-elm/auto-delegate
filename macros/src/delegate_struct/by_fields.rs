@@ -2,20 +2,20 @@ use proc_macro2::{Ident, TokenStream};
 use quote::ToTokens;
 use syn::{Attribute, Field, Fields};
 
-pub struct ByFieldIdent {
+pub struct ByField {
     field_name: Ident,
-    trait_name: Ident,
+    trait_names: Vec<Ident>,
 }
 
 
-impl ByFieldIdent {
+impl ByField {
     pub fn field_name_ref(&self) -> &Ident {
         &self.field_name
     }
 
 
-    pub fn trait_name_ref(&self) -> &Ident {
-        &self.trait_name
+    pub fn trait_names_ref(&self) -> &Vec<Ident> {
+        &self.trait_names
     }
 }
 
@@ -35,7 +35,7 @@ impl ByFields {
 
 
 impl Iterator for ByFields {
-    type Item = ByFieldIdent;
+    type Item = ByField;
 
     fn next(&mut self) -> Option<Self::Item> {
         let field = self.fields.next()?;
@@ -43,12 +43,9 @@ impl Iterator for ByFields {
         if let Some(trait_names) =
             find_by_attribute(&field).and_then(|by_attr| trait_names(&by_attr))
         {
-            Some(ByFieldIdent {
+            Some(ByField {
                 field_name: field.ident.unwrap(),
-                trait_name: trait_names //TODO: 複数のトレイトに対応
-                    .get(0)
-                    .unwrap()
-                    .clone(),
+                trait_names,
             })
         } else {
             self.next()
