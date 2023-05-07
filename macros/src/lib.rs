@@ -6,6 +6,8 @@ use crate::delegate_trait::expand_delegate_trait;
 mod delegate;
 mod delegate_trait;
 mod ident;
+mod trait_fn_iter;
+mod trait_fn_meta;
 
 #[proc_macro_attribute]
 pub fn delegate_trait(attr: TokenStream, input: TokenStream) -> TokenStream {

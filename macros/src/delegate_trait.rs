@@ -1,5 +1,6 @@
 use proc_macro::TokenStream;
 
+use crate::trait_fn_iter::TraitFnIter;
 use proc_macro2::Ident;
 use syn::ItemTrait;
 use syn::__private::TokenStream2;
@@ -27,6 +28,8 @@ fn expand_impl_macro(item: &ItemTrait) -> TokenStream2 {
         .to_string();
     let macro_name = format!("impl_delegate_{}", trait_name.to_lowercase());
     let macro_name = Ident::new(&macro_name, proc_macro2::Span::call_site());
+    dbg!(item.clone());
+    let trait_fn = TraitFnIter::new(item.clone().items).map(|meta| meta.expand_fn());
 
     let span = item.span();
     quote::quote_spanned! { span =>
@@ -34,7 +37,7 @@ fn expand_impl_macro(item: &ItemTrait) -> TokenStream2 {
         macro_rules! #macro_name{
             ($struct_name: ident) => {
                 impl #trait_ident for $struct_name{
-
+                    #(#trait_fn)*
                 }
             };
         }
