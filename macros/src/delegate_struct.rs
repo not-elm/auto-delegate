@@ -1,10 +1,9 @@
 use proc_macro::TokenStream;
 
-use quote::TokenStreamExt;
+use proc_macro2::Ident;
 use syn::ItemStruct;
-use syn::__private::TokenStream2;
 
-use crate::delegate_struct::by_fields::ByFields;
+use crate::delegate_struct::by_fields::{ByField, ByFields};
 use crate::ident::generate_delegate_impl_macro_name;
 
 mod by_fields;
@@ -18,13 +17,21 @@ pub fn expand_delegate(input: TokenStream) -> proc_macro2::TokenStream {
 
 fn try_expand_delegate(input: TokenStream) -> syn::Result<proc_macro2::TokenStream> {
     let item_struct = syn::parse::<ItemStruct>(input)?;
+    let struct_name = item_struct.ident;
 
-    let by_field = ByFields::new(item_struct.fields.clone())
-        .next()
-        .unwrap();
+    let expand_impl_methods = ByFields::new(item_struct.fields.clone())
+        .map(|by_field| impl_method_by_delegate(&struct_name, by_field));
+
+
+    Ok(quote::quote! {
+        #(#expand_impl_methods)*
+    })
+}
+
+
+fn impl_method_by_delegate(struct_name: &Ident, by_field: ByField) -> proc_macro2::TokenStream {
     let delegate_field_name = by_field.field_name_ref();
 
-    let struct_name = item_struct.ident;
 
     let mut expand = quote::quote!();
     by_field
@@ -38,5 +45,7 @@ fn try_expand_delegate(input: TokenStream) -> syn::Result<proc_macro2::TokenStre
             };
             expand.extend(impl_delegate_field)
         });
-    Ok(expand)
+
+
+    expand
 }

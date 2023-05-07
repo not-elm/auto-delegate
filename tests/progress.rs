@@ -7,4 +7,5 @@ fn tests() {
     t.pass("tests/03-delegate_by_with_args.rs");
     t.pass("tests/04-delegate_multiple_methods.rs");
     t.pass("tests/05-delegate_multiple_traits.rs");
+    t.pass("tests/06-delegate_multiple_fields.rs");
 }
