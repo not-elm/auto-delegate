@@ -1,3 +1,5 @@
+#![feature(iter_intersperse)]
+
 use proc_macro::TokenStream;
 
 use crate::delegate::expand_delegate;
@@ -6,6 +8,7 @@ use crate::delegate_trait::expand_delegate_trait;
 mod delegate;
 mod delegate_trait;
 mod ident;
+mod trait_fn_inputs;
 mod trait_fn_iter;
 mod trait_fn_meta;
 
