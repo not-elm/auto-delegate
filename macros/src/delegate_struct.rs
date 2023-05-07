@@ -19,7 +19,7 @@ fn try_expand_delegate(input: TokenStream) -> syn::Result<proc_macro2::TokenStre
     let item_struct = syn::parse::<ItemStruct>(input)?;
     let struct_name = item_struct.ident;
 
-    let expand_impl_methods = ByFields::new(item_struct.fields.clone())
+    let expand_impl_methods = ByFields::new(item_struct.fields)
         .map(|by_field| impl_method_by_delegate(&struct_name, by_field));
 
 

@@ -1,6 +1,6 @@
 use proc_macro2::Ident;
 use syn::__private::TokenStream2;
-use syn::{ReturnType, TraitItemFn, Type, TypePath};
+use syn::{ReturnType, TraitItemFn, Type, TypePath, TypeTuple};
 
 use crate::trait_item::trait_fn_inputs::TraitFnInputs;
 
@@ -15,7 +15,7 @@ impl TraitFnMeta {
 
     pub fn expand_fn(&self) -> syn::Result<TokenStream2> {
         let fn_name = self.fn_name();
-        let output = self.output_ty();
+        let output = self.output();
         let fn_inputs = TraitFnInputs::new(self.0.sig.inputs.clone());
 
         let args = fn_inputs.expand_args()?;
@@ -34,7 +34,7 @@ impl TraitFnMeta {
     }
 
 
-    fn output_ty(&self) -> Option<TokenStream2> {
+    fn output(&self) -> Option<TokenStream2> {
         if let ReturnType::Type(_, type_path) = &self.0.sig.output {
             return_ty(type_path).map(|ty| quote::quote! {-> #ty})
         } else {
@@ -44,11 +44,25 @@ impl TraitFnMeta {
 }
 
 
-fn return_ty(ty: &Type) -> Option<&Ident> {
+fn return_ty(ty: &Type) -> Option<TokenStream2> {
     match ty {
-        Type::Path(path) => Some(return_ty_path(path)),
+        Type::Path(path) => Some(output_path(path)),
+        Type::Tuple(tuple) => output_tuple(tuple),
         _ => None,
     }
+}
+
+
+fn output_path(path: &TypePath) -> TokenStream2 {
+    let ty = return_ty_path(path);
+    quote::quote! {#ty}
+}
+
+
+fn output_tuple(tuple: &TypeTuple) -> Option<TokenStream2> {
+    let first = tuple.elems.first()?;
+    let last = tuple.elems.last()?;
+    Some(quote::quote! {(#first, #last)})
 }
 
 
