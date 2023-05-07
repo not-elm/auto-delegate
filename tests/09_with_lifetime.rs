@@ -15,11 +15,11 @@ struct Transform<'a> {
 
 impl<'a> Transformable<'a> for Transform<'a> {
     fn position_ref(&'a self) -> &'a (usize, usize) {
-        &self.pos
+        self.pos
     }
 
     fn position_mut(&'a mut self) -> &'a mut (usize, usize) {
-        &mut self.pos
+        self.pos
     }
 }
 

@@ -5,7 +5,7 @@ members = [
 
 
 [package]
-name = "delegate"
+name = "auto-delegate"
 version = "0.1.0"
 edition = "2021"
 
@@ -16,7 +16,7 @@ path = "tests/progress.rs"
 
 
 [dependencies]
-macros = {path = "macros"}
+macros = { path = "macros" }
 
 [dev-dependencies]
 trybuild = "1.0.80"
