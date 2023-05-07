@@ -1,0 +1,22 @@
+[workspace]
+members = [
+    "macros"
+]
+
+
+[package]
+name = "delegate"
+version = "0.1.0"
+edition = "2021"
+
+
+[[test]]
+name = "tests"
+path = "tests/progress.rs"
+
+
+[dependencies]
+
+
+[dev-dependencies]
+trybuild = "1.0.80"
