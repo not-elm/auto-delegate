@@ -16,8 +16,25 @@ impl TraitFnInputs {
         Self { inputs }
     }
 
+    pub fn expand_inputs(&self) -> TokenStream2 {
+        let expand = self
+            .inputs
+            .iter()
+            .filter_map(|args| match args {
+                FnArg::Typed(pat_type) => {
+                    let ident = require_ident(&pat_type.pat).ok()?;
+                    Some(quote::quote! {#ident})
+                }
+                _ => None,
+            })
+            .intersperse(quote::quote! {,});
 
-    pub fn expand(&self) -> syn::Result<TokenStream2> {
+        quote::quote! {
+            #(#expand)*
+        }
+    }
+
+    pub fn expand_args(&self) -> syn::Result<TokenStream2> {
         let expand = self
             .inputs
             .iter()

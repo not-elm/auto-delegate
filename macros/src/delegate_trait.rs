@@ -5,7 +5,7 @@ use syn::ItemTrait;
 use syn::__private::TokenStream2;
 use syn::spanned::Spanned;
 
-use crate::trait_fn_iter::TraitFnIter;
+use crate::trait_item::trait_fn_iter::TraitFnIter;
 
 pub fn expand_delegate_trait(_attr: TokenStream, input: TokenStream) -> TokenStream2 {
     match try_expand_delegate_trait(input) {
@@ -36,7 +36,7 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
     Ok(quote::quote_spanned! { span =>
         #[macro_export]
         macro_rules! #macro_name{
-            ($struct_name: ident) => {
+            ($struct_name: ident, $delegate_field: ident) => {
                 impl #trait_ident for $struct_name{
                     #(#trait_fn)*
                 }

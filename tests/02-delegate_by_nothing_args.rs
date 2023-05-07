@@ -1,6 +1,8 @@
-use macros::delegate_trait;
+use macros::{delegate_trait, Delegate};
 
-/// 構造体のメンバに自動移譲させるマクロを作成出来るようにします。
+/// Delegate及びby属性によって自動で委譲が実装させるようにします。
+///
+/// ただし現時点では、引数は取れません。
 #[delegate_trait]
 trait Adder {
     fn increment(&mut self) -> usize;
@@ -19,7 +21,9 @@ impl Adder for Child {
 }
 
 
+#[derive(Delegate)]
 struct Parent {
+    #[by(Adder)]
     child: Child,
 }
 
@@ -28,7 +32,7 @@ fn main() {
     let mut parent = Parent {
         child: Child { num: 0 },
     };
-    impl_delegate_adder!(Parent, child);
+
     assert_eq!(parent.increment(), 1);
     assert_eq!(parent.increment(), 2);
     assert_eq!(parent.increment(), 3);

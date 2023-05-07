@@ -2,7 +2,8 @@ use proc_macro2::Ident;
 use syn::__private::TokenStream2;
 use syn::{ReturnType, TraitItemFn, Type, TypePath};
 
-use crate::trait_fn_inputs::TraitFnInputs;
+
+use crate::trait_item::trait_fn_inputs::TraitFnInputs;
 
 pub struct TraitFnMeta(TraitItemFn);
 
@@ -16,12 +17,14 @@ impl TraitFnMeta {
     pub fn expand_fn(&self) -> syn::Result<TokenStream2> {
         let fn_name = self.fn_name();
         let output_ty = self.output_ty();
-        let inputs = TraitFnInputs::new(self.0.sig.inputs.clone()).expand()?;
-    
+        let fn_inputs = TraitFnInputs::new(self.0.sig.inputs.clone());
+
+        let args = fn_inputs.expand_args()?;
+        let inputs = fn_inputs.expand_inputs();
         Ok(quote::quote! {
             // TODO 引数やレシーバ
-            fn #fn_name(#inputs) -> #output_ty{
-                1 // TODO 実装の中身
+            fn #fn_name(#args) -> #output_ty{
+                self.$delegate_field.#fn_name(#inputs)
             }
         })
     }

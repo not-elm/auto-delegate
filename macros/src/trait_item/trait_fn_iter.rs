@@ -1,6 +1,6 @@
 use syn::TraitItem;
 
-use crate::trait_fn_meta::TraitFnMeta;
+use crate::trait_item::trait_fn_meta::TraitFnMeta;
 
 pub struct TraitFnIter {
     items: Box<dyn Iterator<Item = TraitItem>>,
