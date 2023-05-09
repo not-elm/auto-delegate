@@ -1,4 +1,6 @@
 #![feature(iter_intersperse)]
+#![feature(core_intrinsics)]
+#![feature(proc_macro_span)]
 
 use proc_macro::TokenStream;
 
@@ -8,6 +10,7 @@ use crate::delegate_trait::expand_delegate_trait;
 mod delegate_struct;
 mod delegate_trait;
 mod ident;
+mod span;
 mod trait_item;
 
 #[proc_macro_attribute]
