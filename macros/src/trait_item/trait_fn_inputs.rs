@@ -1,10 +1,10 @@
 use proc_macro2::Ident;
+use syn::{FnArg, Pat, PatType, Receiver, TypeReference};
 use syn::__private::TokenStream2;
 use syn::punctuated::Punctuated;
 use syn::spanned::Spanned;
 use syn::token::Comma;
 use syn::Type::{Path, Reference};
-use syn::{FnArg, Pat, PatType, Receiver, TypeReference};
 
 pub struct TraitFnInputs {
     inputs: Punctuated<FnArg, Comma>,

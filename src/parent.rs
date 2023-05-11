@@ -1,3 +1,8 @@
+#[inline]
+pub fn a(){
+    use crate::transform::Hello;
+}
+
 #[cfg(test)]
 mod tests {
     use crate::child::HelloChild;
