@@ -10,6 +10,7 @@ use crate::delegate_trait::expand_delegate_trait;
 mod delegate_struct;
 mod delegate_trait;
 mod ident;
+mod macro_marker;
 mod span;
 mod trait_item;
 

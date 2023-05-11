@@ -1,37 +1,30 @@
-pub(crate) use crate::a;
-use crate::child::HelloChild;
-pub(crate) use crate::impl_delegate_hello;
-a!();
-impl_delegate_hello!();
-pub struct HelloParent {
-    child: HelloChild,
-}
-
-
-impl HelloParent {
-    pub fn new() -> Self {
-        Self {
-            child: HelloChild {},
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use crate::child::HelloChild;
-    use crate::parent::HelloParent;
     use crate::transform::Hello;
+    use macros::Delegate;
 
-    #[test]
-    fn it() {
-        let mut parent = HelloChild {};
-        parent.hello();
+    #[derive(Delegate)]
+    pub struct HelloParent {
+        #[by(Hello)]
+        child: HelloChild,
+    }
+
+
+    impl HelloParent {
+        pub fn new() -> Self {
+            Self {
+                child: HelloChild {},
+            }
+        }
     }
 
 
     #[test]
     fn it2() {
         let mut parent = HelloParent::new();
-        parent.hello();
+
+        let num = parent.hello_ref(3);
+        assert_eq!(num, 4);
     }
 }

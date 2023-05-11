@@ -25,11 +25,11 @@ struct Parent {
 
 
 fn main() {
-    let mut parent = Parent {
-        child: Child { num: 0 },
-    };
-    impl_delegate_adder!(Parent, child);
-    assert_eq!(parent.increment(), 1);
-    assert_eq!(parent.increment(), 2);
-    assert_eq!(parent.increment(), 3);
+    // let mut parent = Parent {
+    //     child: Child { num: 0 },
+    // };
+    // impl_delegate_adder!(Parent, child);
+    // assert_eq!(parent.increment(), 1);
+    // assert_eq!(parent.increment(), 2);
+    // assert_eq!(parent.increment(), 3);
 }

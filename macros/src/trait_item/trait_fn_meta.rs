@@ -20,10 +20,11 @@ impl TraitFnMeta {
 
         let args = fn_inputs.expand_args()?;
         let inputs = fn_inputs.expand_inputs();
+        let delegate = fn_inputs.expand_delegate_method();
 
         Ok(quote::quote! {
             fn #fn_name(#args) #output{
-                self.$delegate_field.#fn_name(#inputs)
+                #delegate.#fn_name(#inputs)
             }
         })
     }

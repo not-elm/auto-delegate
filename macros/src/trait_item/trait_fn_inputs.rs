@@ -16,6 +16,17 @@ impl TraitFnInputs {
         Self { inputs }
     }
 
+
+    pub fn expand_delegate_method(&self) -> Option<TokenStream2> {
+        self.inputs
+            .iter()
+            .find_map(|args| match args {
+                FnArg::Receiver(receiver) => expand_delegate_method(receiver),
+                _ => None,
+            })
+    }
+
+
     pub fn expand_inputs(&self) -> TokenStream2 {
         let expand = self
             .inputs
@@ -52,6 +63,15 @@ impl TraitFnInputs {
 }
 
 
+fn expand_delegate_method(receiver: &Receiver) -> Option<TokenStream2> {
+    let ty = *receiver.ty.clone();
+    match ty {
+        Reference(ty_ref) => Some(reference_delegate(&ty_ref)),
+        _ => None,
+    }
+}
+
+
 fn expand_receiver(receiver: &Receiver) -> TokenStream2 {
     let ty = *receiver.ty.clone();
     match ty {
@@ -70,6 +90,15 @@ fn expand_pat_type(pat_type: &PatType) -> syn::Result<TokenStream2> {
     Ok(quote::quote! {
         #args_name : #args_ty
     })
+}
+
+
+fn reference_delegate(ty_ref: &TypeReference) -> TokenStream2 {
+    if ty_ref.mutability.is_none() {
+        quote::quote! {self.delegate_by_ref()}
+    } else {
+        quote::quote! {self.delegate_by_mut()}
+    }
 }
 
 

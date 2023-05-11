@@ -1,6 +1,7 @@
 [workspace]
 members = [
-    "macros"
+    "macros",
+    "define"
 ]
 
 
@@ -17,6 +18,8 @@ path = "tests/progress.rs"
 
 [dependencies]
 macros = { path = "macros" }
+define = { path = "define" }
+syn = { version = "2.0.15", features = ["full", "extra-traits", "derive"] }
 
 [dev-dependencies]
 trybuild = "1.0.80"

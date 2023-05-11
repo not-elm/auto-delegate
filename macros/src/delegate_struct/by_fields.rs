@@ -4,7 +4,7 @@ use syn::{Attribute, Field, Fields};
 
 pub struct ByField {
     field_name: Ident,
-    trait_names: Vec<Ident>,
+    field_ty: syn::Type,
 }
 
 
@@ -14,8 +14,8 @@ impl ByField {
     }
 
 
-    pub fn trait_names_ref(&self) -> &Vec<Ident> {
-        &self.trait_names
+    pub fn field_ty_ref(&self) -> &syn::Type {
+        &self.field_ty
     }
 }
 
@@ -40,12 +40,12 @@ impl Iterator for ByFields {
     fn next(&mut self) -> Option<Self::Item> {
         let field = self.fields.next()?;
 
-        if let Some(trait_names) =
+        if let Some(_trait_names) =
             find_by_attribute(&field).and_then(|by_attr| trait_names(&by_attr))
         {
             Some(ByField {
                 field_name: field.ident.unwrap(),
-                trait_names,
+                field_ty: field.ty,
             })
         } else {
             self.next()
