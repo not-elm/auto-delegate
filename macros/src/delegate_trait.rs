@@ -1,11 +1,9 @@
 use proc_macro::TokenStream;
 
 use syn::__private::TokenStream2;
-
-use crate::macro_marker::expand_macro_maker_ident;
 use syn::{ItemTrait, LifetimeParam};
 
-
+use crate::macro_marker::expand_macro_maker_ident;
 use crate::trait_item::trait_fn_iter::TraitFnIter;
 
 pub fn expand_delegate_trait(_attr: TokenStream, input: TokenStream) -> TokenStream2 {
@@ -34,20 +32,17 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
             TraitFnIter::new(item.clone().items).filter_map(|meta| meta.expand_fn().ok());
 
         quote::quote! {
-            impl<T: #macro_maker_ident <DelegateType = V>, V: #trait_ident> #trait_ident for T{
+            impl<T, V> #trait_ident for T
+                where T: #macro_maker_ident<DelegateType = V>,
+                      V: #trait_ident
+            {
                 #(#trait_fn)*
             }
         }
     };
 
-    let expand_impls = (0..1)
-        .map(expand_macro_maker_ident)
-        .map(expand_impl);
 
-
-    Ok(quote::quote! {
-        #(#expand_impls)*
-    })
+    Ok(expand_impl(expand_macro_maker_ident()))
 }
 
 

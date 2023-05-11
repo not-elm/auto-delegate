@@ -21,8 +21,8 @@ fn try_expand_delegate(input: TokenStream) -> syn::Result<proc_macro2::TokenStre
     let struct_name = item_struct.clone().ident;
 
     let expand_impl_methods = ByFields::new(item_struct.fields)
-        .enumerate()
-        .map(|(no, by_field)| impl_method_by_delegate(&struct_name, by_field, no));
+        .take(1)
+        .map(|by_field| impl_method_by_delegate(&struct_name, by_field));
 
 
     Ok(quote::quote! {
@@ -34,11 +34,10 @@ fn try_expand_delegate(input: TokenStream) -> syn::Result<proc_macro2::TokenStre
 fn impl_method_by_delegate(
     struct_name: &Ident,
     by_field: ByField,
-    no: usize,
 ) -> proc_macro2::TokenStream {
     let delegate_field_name = by_field.field_name_ref();
     let delegate_filed_ty = by_field.field_ty_ref();
-    let macro_marker_ident = expand_macro_maker_ident(no);
+    let macro_marker_ident = expand_macro_maker_ident();
 
     quote::quote! {
         impl #macro_marker_ident for #struct_name{
