@@ -6,7 +6,7 @@ use syn::spanned::Spanned;
 use syn::token::Comma;
 use syn::Type::{Path, Reference};
 
-use crate::syn_type::{expand_syn_type, syn_type_error};
+use crate::syn::syn_type::expand_syn_type;
 
 pub struct TraitFnInputs {
     inputs: Punctuated<FnArg, Comma>,
@@ -97,7 +97,7 @@ fn expand_pat_type(pat_type: &PatType) -> syn::Result<TokenStream2> {
     let args_name = require_ident(&pat_type.pat)?;
 
 
-    let args_ty = expand_syn_type(&pat_type.ty).ok_or(syn_type_error(&pat_type.ty))?;
+    let args_ty = expand_syn_type(&pat_type.ty);
 
     Ok(quote::quote! {
         #args_name : #args_ty

@@ -2,7 +2,8 @@ use proc_macro2::Ident;
 use syn::{ReturnType, TraitItemFn};
 use syn::__private::TokenStream2;
 
-use crate::syn_type::expand_syn_type;
+use crate::syn::syn_generics::expand_generics_with_brackets;
+use crate::syn::syn_type::expand_syn_type;
 use crate::trait_item::trait_fn_inputs::TraitFnInputs;
 
 pub struct TraitFnMeta(TraitItemFn);
@@ -22,9 +23,10 @@ impl TraitFnMeta {
         let args = fn_inputs.expand_args()?;
         let inputs = fn_inputs.expand_inputs();
         let delegate = fn_inputs.expand_delegate_method();
+        let generics_brackets = expand_generics_with_brackets(&self.0.sig.generics);
 
         Ok(quote::quote! {
-            fn #fn_name(#args) #output{
+            fn #fn_name #generics_brackets(#args) #output{
                 #delegate.#fn_name(#inputs)
             }
         })
@@ -38,7 +40,8 @@ impl TraitFnMeta {
 
     fn output(&self) -> Option<TokenStream2> {
         if let ReturnType::Type(_, type_path) = &self.0.sig.output {
-            expand_syn_type(type_path).map(|ty| quote::quote! {-> #ty})
+            let ty = expand_syn_type(type_path);
+            Some(quote::quote! {-> #ty})
         } else {
             None
         }

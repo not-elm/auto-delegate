@@ -14,7 +14,7 @@ mod ident;
 mod macro_marker;
 mod span;
 mod trait_item;
-mod syn_type;
+mod syn;
 
 #[proc_macro_attribute]
 pub fn delegate_trait(attr: TokenStream, input: TokenStream) -> TokenStream {

@@ -1,9 +1,11 @@
 use proc_macro::TokenStream;
 
+use proc_macro2::Span;
 use syn::{ItemTrait, LifetimeParam};
 use syn::__private::TokenStream2;
 
 use crate::macro_marker::expand_macro_maker_ident;
+use crate::syn::syn_generics::{expand_generic_param_without_bound, expand_generics_separate_colon};
 use crate::trait_item::trait_fn_iter::TraitFnIter;
 
 pub fn expand_delegate_trait(_attr: TokenStream, input: TokenStream) -> TokenStream2 {
@@ -22,71 +24,68 @@ fn try_expand_delegate_trait(input: TokenStream) -> syn::Result<TokenStream2> {
 
 
 fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
-    let trait_ident = &item.ident;
-
-
-    let generics = expand_generics(item);
-    let lifetime = generics
-        .clone()
-        .map(|life_times| {
-            quote::quote! {
-                #life_times,
-            }
-        });
-
-
-    let generics_brackets = generics.map(|life_times| {
+    let generics = expand_generics_separate_colon(&item.generics);
+    let lifetime = generics.map(|life_times| {
         quote::quote! {
-            <#life_times>
+            #life_times,
         }
     });
-    let trait_ident = quote::quote! {
-        #trait_ident #generics_brackets
-    };
 
+    let trait_name = expand_trait_name(item);
 
     let expand_impl = |macro_maker_ident: TokenStream2| {
         let trait_fn: Vec<TokenStream2> = TraitFnIter::new(item.clone().items)
             .map(|meta| meta.expand_fn())
             .try_collect()?;
 
-        let lifetime_bound = expand_generics_bounds(item);
+        let lifetime_bound = expand_lifetimes_bound(item);
+
+        let impl_generic = proc_macro2::Ident::new("MacroMakerImpl", Span::call_site());
+
+        let trait_bound_generic = proc_macro2::Ident::new("TraitBound", Span::call_site());
 
         Ok(quote::quote! {
-            impl<#lifetime T, V> #trait_ident for T
-                where T: #macro_maker_ident<DelegateType = V>,
-                      V: #lifetime_bound
+            impl<#lifetime #impl_generic, #trait_bound_generic> #trait_name for #impl_generic
+                where #impl_generic: #macro_maker_ident<DelegateType = #trait_bound_generic>,
+                      #trait_bound_generic : #lifetime_bound
             {
                 #(#trait_fn)*
             }
         })
     };
 
-
     expand_impl(expand_macro_maker_ident())
 }
 
 
-fn expand_generics(item: &ItemTrait) -> Option<TokenStream2> {
-    let life_times: Vec<TokenStream2> = item
+fn expand_trait_name(item: &ItemTrait) -> TokenStream2 {
+    let generics: Vec<TokenStream2> = item
         .generics
-        .lifetimes()
-        .map(|lifetime| quote::quote!(#lifetime))
+        .params
+        .iter()
+        .map(expand_generic_param_without_bound)
         .intersperse(quote::quote!(,))
         .collect();
 
-    if life_times.is_empty() {
+
+    let generics_brackets = if generics.is_empty() {
         None
     } else {
-        Some(quote::quote! {#(#life_times)*})
+        Some(quote::quote! {
+            <#(#generics)*>
+        })
+    };
+
+    let trait_ident = &item.ident;
+
+    quote::quote! {
+        #trait_ident #generics_brackets
     }
 }
 
 
-fn expand_generics_bounds(
-    item_trait: &ItemTrait
-) -> TokenStream2 {
-    let trait_ident = &item_trait.ident;
+fn expand_lifetimes_bound(item_trait: &ItemTrait) -> TokenStream2 {
+    let trait_name = expand_trait_name(item_trait);
 
 
     let lifetime_params: Vec<&LifetimeParam> = item_trait
@@ -96,7 +95,7 @@ fn expand_generics_bounds(
 
     if lifetime_params.is_empty() {
         quote::quote! {
-            #trait_ident + 'static
+            #trait_name + 'static
         }
     } else {
         let lifetimes_bound: Vec<TokenStream2> = lifetime_params
@@ -105,13 +104,9 @@ fn expand_generics_bounds(
             .intersperse(quote::quote!(+))
             .collect();
 
-        let lifetimes = lifetime_params
-            .iter()
-            .map(|lifetime| quote::quote!(#lifetime))
-            .intersperse(quote::quote!(,));
 
         quote::quote! {
-            #trait_ident <#(#lifetimes)*> + #(#lifetimes_bound)*
+            #trait_name + #(#lifetimes_bound)*
         }
     }
 }

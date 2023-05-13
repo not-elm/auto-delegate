@@ -9,4 +9,8 @@ fn tests() {
     t.pass("tests/test5_delegate_reference.rs");
     t.pass("tests/test6_lifetime.rs");
     t.pass("tests/test7_multiple_lifetimes.rs");
+    t.pass("tests/test8_generics.rs");
+    t.pass("tests/test9_multiple_generics.rs");
+    t.pass("tests/test10_type_slice.rs");
+    t.pass("tests/test11_generics_bound.rs");
 }
