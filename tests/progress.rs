@@ -13,4 +13,5 @@ fn tests() {
     t.pass("tests/test9_multiple_generics.rs");
     t.pass("tests/test10_type_slice.rs");
     t.pass("tests/test11_generics_bound.rs");
+    t.pass("tests/test12_generics_where.rs");
 }

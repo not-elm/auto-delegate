@@ -5,7 +5,7 @@ use syn::{ItemTrait, LifetimeParam};
 use syn::__private::TokenStream2;
 
 use crate::macro_marker::expand_macro_maker_ident;
-use crate::syn::syn_generics::{expand_generic_param_without_bound, expand_generics_separate_colon};
+use crate::syn::syn_generics::{expand_generic_param_without_bound, expand_generics_separate_colon, expand_where_bound_without_where_token};
 use crate::trait_item::trait_fn_iter::TraitFnIter;
 
 pub fn expand_delegate_trait(_attr: TokenStream, input: TokenStream) -> TokenStream2 {
@@ -44,10 +44,13 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
 
         let trait_bound_generic = proc_macro2::Ident::new("TraitBound", Span::call_site());
 
+        let where_generics = expand_where_bound_without_where_token(&item.generics);
+
         Ok(quote::quote! {
             impl<#lifetime #impl_generic, #trait_bound_generic> #trait_name for #impl_generic
                 where #impl_generic: #macro_maker_ident<DelegateType = #trait_bound_generic>,
-                      #trait_bound_generic : #lifetime_bound
+                      #trait_bound_generic : #lifetime_bound,
+                      #where_generics
             {
                 #(#trait_fn)*
             }

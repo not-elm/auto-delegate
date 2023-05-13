@@ -53,3 +53,24 @@ pub fn expand_generic_param_without_bound(param: &GenericParam) -> TokenStream2 
         _ => quote::quote!(#param)
     }
 }
+
+
+pub fn expand_where_bound(generics: &Generics) -> Option<TokenStream2> {
+    generics
+        .where_clause
+        .as_ref()
+        .map(|param| {
+            quote::quote!(#param)
+        })
+}
+
+
+pub fn expand_where_bound_without_where_token(generics: &Generics) -> Option<TokenStream2> {
+    generics
+        .where_clause
+        .as_ref()
+        .map(|where_clause| {
+            let params = &where_clause.predicates;
+            quote::quote!(#params)
+        })
+}
