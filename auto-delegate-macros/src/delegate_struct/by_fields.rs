@@ -5,7 +5,7 @@ use syn::{Attribute, Field, Fields};
 pub struct ByField {
     field_name: Ident,
     field_ty: syn::Type,
-    trait_names: Vec<Ident>,
+    _trait_names: Vec<Ident>,
 }
 
 
@@ -19,15 +19,15 @@ impl ByField {
         &self.field_ty
     }
 
-
+    #[allow(unused)]
     pub fn trait_names_ref(&self) -> &Vec<Ident> {
-        &self.trait_names
+        &self._trait_names
     }
 }
 
 
 pub struct ByFields {
-    fields: Box<dyn Iterator<Item = Field>>,
+    fields: Box<dyn Iterator<Item=Field>>,
 }
 
 
@@ -52,7 +52,7 @@ impl Iterator for ByFields {
             Some(ByField {
                 field_name: field.ident.unwrap(),
                 field_ty: field.ty,
-                trait_names,
+                _trait_names: trait_names,
             })
         } else {
             self.next()

@@ -1,7 +1,6 @@
 [workspace]
 members = [
-    "macros",
-    "define"
+    "auto-delegate-macros",
 ]
 
 
@@ -11,15 +10,17 @@ version = "0.1.0"
 edition = "2021"
 
 
+
 [[test]]
 name = "tests"
 path = "tests/progress.rs"
 
 
 [dependencies]
-macros = { path = "macros" }
-define = { path = "define" }
 syn = { version = "2.0.15", features = ["full", "extra-traits", "derive"] }
+auto-delegate-macros = { path = "./auto-delegate-macros" }
+
 
 [dev-dependencies]
 trybuild = "1.0.80"
+

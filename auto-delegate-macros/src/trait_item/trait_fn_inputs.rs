@@ -6,6 +6,8 @@ use syn::spanned::Spanned;
 use syn::token::Comma;
 use syn::Type::{Path, Reference};
 
+use crate::syn_type::{expand_syn_type, syn_type_error};
+
 pub struct TraitFnInputs {
     inputs: Punctuated<FnArg, Comma>,
 }
@@ -46,19 +48,28 @@ impl TraitFnInputs {
     }
 
     pub fn expand_args(&self) -> syn::Result<TokenStream2> {
-        let expand = self
-            .inputs
-            .iter()
-            .map(|args| match args {
-                FnArg::Receiver(receiver) => expand_receiver(receiver),
-                //TODO: 引数の型の例外処理
-                FnArg::Typed(pat_type) => expand_pat_type(pat_type).unwrap(),
-            })
-            .intersperse(quote::quote! {,});
+        let mut expand: Vec<TokenStream2> = Vec::new();
+        for args_type in self.inputs.iter() {
+            let token = expand_fn_arg(args_type)?;
+            expand.push(token);
+        }
+
+        let expand = expand
+            .into_iter()
+            .intersperse(quote::quote!(,));
 
         Ok(quote::quote! {
             #(#expand)*
         })
+    }
+}
+
+
+fn expand_fn_arg(args: &FnArg) -> syn::Result<TokenStream2> {
+    match args {
+        FnArg::Receiver(receiver) => Ok(expand_receiver(receiver)),
+
+        FnArg::Typed(pat_type) => expand_pat_type(pat_type),
     }
 }
 
@@ -85,7 +96,8 @@ fn expand_receiver(receiver: &Receiver) -> TokenStream2 {
 fn expand_pat_type(pat_type: &PatType) -> syn::Result<TokenStream2> {
     let args_name = require_ident(&pat_type.pat)?;
 
-    let args_ty = fn_args_ty(pat_type)?;
+
+    let args_ty = expand_syn_type(&pat_type.ty).ok_or(syn_type_error(&pat_type.ty))?;
 
     Ok(quote::quote! {
         #args_name : #args_ty
@@ -120,24 +132,5 @@ fn require_ident(pat: &Pat) -> syn::Result<&Ident> {
             pat.span(),
             "Required PatIdent But Different",
         ))
-    }
-}
-
-
-fn fn_args_ty(pat_type: &PatType) -> syn::Result<TokenStream2> {
-    match *pat_type.clone().ty {
-        Path(path) => {
-            let ident = path
-                .path
-                .get_ident()
-                .ok_or(syn::Error::new(
-                    path.span(),
-                    "Expected Input Ident But Not Found",
-                ))?;
-            Ok(quote::quote! {
-                #ident
-            })
-        }
-        _ => Err(syn::Error::new(pat_type.span(), "PatType is Not Supported")),
     }
 }

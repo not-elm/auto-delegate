@@ -1,11 +1,14 @@
-use macros::{Delegate, delegate_trait};
-use crate::parent::a;
+pub trait MacroMarker {
+    type DelegateType;
 
-pub mod child;
-pub mod parent;
-pub mod transform;
+    fn delegate_by_ref(&self) -> &Self::DelegateType;
 
-pub fn aa(){
-    a();
-    impl Hello for
+    fn delegate_by_mut(&mut self) -> &mut Self::DelegateType;
+}
+
+
+pub trait MacroDynMarker<T: ?Sized> {
+    fn delegate_by_ref(&self) -> Box<&T>;
+
+    fn delegate_by_mut(&mut self) -> Box<&mut T>;
 }

@@ -1,4 +1,4 @@
-// use macros::{delegate_trait, Delegate};
+// use auto-delegate-macros::{delegate_trait, Delegate};
 
 // /// 複数のフィールド、複数のトレイトを委譲できるようにします。
 // #[delegate_trait]

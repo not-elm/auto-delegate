@@ -1,4 +1,6 @@
-use macros::{delegate_trait, Delegate};
+use auto_delegate_macros::{Delegate, delegate_trait};
+
+mod common;
 
 /// Delegate及びby属性によって自動で委譲が実装させるようにします。
 ///
@@ -30,8 +32,9 @@ struct Parent {
 
 fn main() {
     let mut parent = Parent {
-        child: Child { num: 0 },
+        child: Child { num: 0 }
     };
+
 
     assert_eq!(parent.increment(), 1);
     assert_eq!(parent.increment(), 2);
