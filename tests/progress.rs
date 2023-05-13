@@ -7,4 +7,6 @@ fn tests() {
     t.pass("tests/test3_delegate_with_args.rs");
     t.pass("tests/test4_delegate_tuple.rs");
     t.pass("tests/test5_delegate_reference.rs");
+    t.pass("tests/test6_lifetime.rs");
+    t.pass("tests/test7_multiple_lifetimes.rs");
 }
