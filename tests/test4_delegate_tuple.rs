@@ -1,6 +1,6 @@
-use auto_delegate_macros::{Delegate, delegate_trait};
+use auto_delegate_macros::{delegate, Delegate};
 
-#[delegate_trait]
+#[delegate]
 trait Transformable {
     fn position(&self) -> (usize, usize);
 
@@ -25,16 +25,14 @@ impl Transformable for Child {
 
 impl Default for Child {
     fn default() -> Self {
-        Self {
-            pos: (0, 0)
-        }
+        Self { pos: (0, 0) }
     }
 }
 
 
 #[derive(Delegate, Default)]
 struct Parent {
-    #[by(Transformable)]
+    #[to(Transformable)]
     child: Child,
 }
 

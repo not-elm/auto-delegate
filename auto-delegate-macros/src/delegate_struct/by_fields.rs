@@ -1,6 +1,7 @@
-use proc_macro2::{Ident, TokenStream};
-use quote::ToTokens;
-use syn::{Attribute, Field, Fields};
+use proc_macro2::Ident;
+use syn::{Field, Fields};
+
+use crate::attribute::{find_by_attribute, trait_names};
 
 pub struct ByField {
     field_name: Ident,
@@ -47,7 +48,7 @@ impl Iterator for ByFields {
         let field = self.fields.next()?;
 
         if let Some(trait_names) =
-            find_by_attribute(&field).and_then(|by_attr| trait_names(&by_attr))
+            find_by_attribute(&field.attrs).and_then(|by_attr| trait_names(&by_attr))
         {
             Some(ByField {
                 field_name: field.ident.unwrap(),
@@ -61,36 +62,3 @@ impl Iterator for ByFields {
 }
 
 
-fn find_by_attribute(field: &Field) -> Option<Attribute> {
-    field
-        .attrs
-        .iter()
-        .find(|attr| {
-            attr.meta
-                .path()
-                .is_ident("by")
-        })
-        .cloned()
-}
-
-
-fn trait_names(by_attr: &Attribute) -> Option<Vec<Ident>> {
-    let mut tokens = TokenStream::new();
-    by_attr.to_tokens(&mut tokens);
-
-    let mut trait_names: Vec<Ident> = Vec::new();
-    by_attr
-        .parse_nested_meta(|meta| {
-            meta.path
-                .segments
-                .into_iter()
-                .for_each(|s| trait_names.push(s.ident));
-            Ok(())
-        })
-        .ok()?;
-    if trait_names.is_empty() {
-        None
-    } else {
-        Some(trait_names)
-    }
-}

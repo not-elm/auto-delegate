@@ -1,6 +1,6 @@
-use auto_delegate_macros::{Delegate, delegate_trait};
+use auto_delegate_macros::{delegate, Delegate};
 
-#[delegate_trait]
+#[delegate]
 pub trait MultipleNames<'a, 'b> {
     fn name1(&self) -> &'a str;
 
@@ -35,7 +35,7 @@ impl<'a, 'b> MultipleNames<'a, 'b> for Child<'a, 'b> {
 
 #[derive(Delegate)]
 struct Parent<'a, 'b> {
-    #[by(MultipleNames)]
+    #[to(MultipleNames)]
     child: Child<'a, 'b>,
 }
 

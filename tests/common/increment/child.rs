@@ -1,11 +1,11 @@
-use crate::common::increment::Addr;
+use crate::common::increment::Increment;
 
 pub struct IncrementChild {
     num: usize,
 }
 
 
-impl Addr for IncrementChild {
+impl Increment for IncrementChild {
     fn increment(&mut self) -> usize {
         self.num += 1;
         self.num

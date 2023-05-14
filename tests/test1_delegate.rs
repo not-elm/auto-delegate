@@ -1,11 +1,11 @@
-use auto_delegate_macros::{Delegate, delegate_trait};
+use auto_delegate_macros::{delegate, Delegate};
 
 mod common;
 
 /// Delegate及びby属性によって自動で委譲が実装させるようにします。
 ///
 /// ただし現時点では、引数は取れません。
-#[delegate_trait]
+#[delegate]
 trait Adder {
     fn increment(&mut self) -> usize;
 }
@@ -25,14 +25,14 @@ impl Adder for Child {
 
 #[derive(Delegate)]
 struct Parent {
-    #[by(Adder)]
+    #[to(Adder)]
     child: Child,
 }
 
 
 fn main() {
     let mut parent = Parent {
-        child: Child { num: 0 }
+        child: Child { num: 0 },
     };
 
 

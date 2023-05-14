@@ -1,6 +1,6 @@
-use auto_delegate_macros::{Delegate, delegate_trait};
+use auto_delegate_macros::{delegate, Delegate};
 
-#[delegate_trait]
+#[delegate]
 trait Buffer {
     fn buff(&mut self, array: [u32; 4]) -> [u32; 4];
 
@@ -24,18 +24,21 @@ impl Buffer for Child {
 
 #[derive(Default, Delegate)]
 struct Parent {
-    #[by(Buffer)]
+    #[to(Buffer)]
     child: Child,
 }
 
 
 fn main() {
     let mut parent = Parent::default();
+
     assert!(parent
         .buff([3; 4])
         .into_iter()
         .all(|e| e == 3));
+
     let array = [3; 4];
+
     assert!(parent
         .array(&array)
         .iter()

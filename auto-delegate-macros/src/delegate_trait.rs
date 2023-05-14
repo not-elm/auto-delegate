@@ -47,8 +47,8 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
         let where_generics = expand_where_bound_without_where_token(&item.generics);
 
         Ok(quote::quote! {
-            impl<#lifetime #impl_generic, #trait_bound_generic> #trait_name for #impl_generic
-                where #impl_generic: #macro_maker_ident<DelegateType = #trait_bound_generic>,
+            impl<#lifetime #impl_generic, #trait_bound_generic> #trait_name for (#impl_generic, PhantomData<#trait_bound_generic>)
+                where #impl_generic: #macro_maker_ident,
                       #trait_bound_generic : #lifetime_bound,
                       #where_generics
             {

@@ -1,6 +1,6 @@
-use auto_delegate_macros::{Delegate, delegate_trait};
+use auto_delegate_macros::{delegate, Delegate};
 
-#[delegate_trait]
+#[delegate]
 trait Accessible<T> {
     fn read(&self) -> &T;
 
@@ -18,7 +18,7 @@ struct Child<T> {
 impl<T: Default> Default for Child<T> {
     fn default() -> Self {
         Self {
-            value: T::default()
+            value: T::default(),
         }
     }
 }
@@ -41,7 +41,7 @@ impl<T> Accessible<T> for Child<T> {
 
 #[derive(Delegate)]
 struct Parent<T> {
-    #[by(Accessible)]
+    #[to(Accessible)]
     child: Child<T>,
 }
 
@@ -49,7 +49,7 @@ struct Parent<T> {
 impl<T: Default> Default for Parent<T> {
     fn default() -> Parent<T> {
         Self {
-            child: Child::default()
+            child: Child::default(),
         }
     }
 }

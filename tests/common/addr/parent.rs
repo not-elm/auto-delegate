@@ -4,14 +4,6 @@ use crate::common::addr::child::AddChild;
 
 #[derive(Delegate, Default)]
 pub struct AddrParent {
-    #[by(Addr)]
+    #[to(Addr)]
     child: AddChild,
 }
-
-
-
-
-
-
-
-

@@ -1,8 +1,8 @@
 use std::{marker::PhantomData, ops::Add};
 
-use auto_delegate_macros::{Delegate, delegate_trait};
+use auto_delegate_macros::{delegate, Delegate};
 
-#[delegate_trait]
+#[delegate]
 trait Addr<Num: Add<Output = Num>> {
     fn add(&mut self, x1: Num, x2: Num) -> Num;
 }
@@ -22,7 +22,7 @@ impl<Num: Add<Output = Num>> Addr<Num> for Child<Num> {
 
 #[derive(Delegate)]
 struct Parent<Num: Add<Output = Num>> {
-    #[by(Addr)]
+    #[to(Addr)]
     child: Child<Num>,
 }
 

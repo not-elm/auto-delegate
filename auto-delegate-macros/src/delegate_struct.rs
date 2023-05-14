@@ -1,8 +1,9 @@
 use proc_macro::TokenStream;
 
-use proc_macro2::Ident;
-use syn::{Generics, ItemStruct};
+use proc_macro2::{Ident, Span};
+use syn::{Generics, ItemEnum, ItemStruct};
 
+use crate::attribute::{find_by_attribute, trait_names};
 use crate::delegate_struct::by_fields::{ByField, ByFields};
 use crate::macro_marker::expand_macro_maker_ident;
 use crate::syn::syn_generics::{expand_generics_with_brackets_without_bound, expand_where_bound};
@@ -19,6 +20,7 @@ pub fn expand_delegate(input: TokenStream) -> proc_macro2::TokenStream {
 
 fn try_expand_delegate(input: TokenStream) -> syn::Result<proc_macro2::TokenStream> {
     let item_struct = syn::parse::<ItemStruct>(input)?;
+
     let struct_name = item_struct.clone().ident;
 
     let expand_impl_methods = ByFields::new(item_struct.fields)
@@ -32,7 +34,24 @@ fn try_expand_delegate(input: TokenStream) -> syn::Result<proc_macro2::TokenStre
 }
 
 
-fn impl_method_by_delegate(struct_name: &Ident, by_field: ByField, generics: &Generics) -> proc_macro2::TokenStream {
+fn try_expand_derive_enum(input: TokenStream) -> syn::Result<proc_macro2::TokenStream> {
+    let item_enum = syn::parse::<ItemEnum>(input)?;
+
+    let by_attr = find_by_attribute(&item_enum.attrs)
+        .ok_or(syn::Error::new(Span::call_site(), "Must Have the 'by' Attribute"))?;
+
+    let trait_names = trait_names(&by_attr)
+        .ok_or(syn::Error::new(Span::call_site(), "Must Have a Trait Name"))?;
+
+
+    Ok(quote::quote!())
+}
+
+fn impl_method_by_delegate(
+    struct_name: &Ident,
+    by_field: ByField,
+    generics: &Generics,
+) -> proc_macro2::TokenStream {
     let delegate_field_name = by_field.field_name_ref();
     let delegate_filed_ty = by_field.field_ty_ref();
     let macro_marker_ident = expand_macro_maker_ident();
@@ -53,4 +72,3 @@ fn impl_method_by_delegate(struct_name: &Ident, by_field: ByField, generics: &Ge
         }
     }
 }
-

@@ -1,6 +1,6 @@
-use auto_delegate_macros::{delegate_trait, Delegate};
+use auto_delegate_macros::{delegate, Delegate};
 
-#[delegate_trait]
+#[delegate]
 trait Trait<'p, 'v, P, V> {
     fn p_ref(&self) -> &'p P;
 
@@ -34,7 +34,7 @@ impl<'p, 'v, P, V> Trait<'p, 'v, P, V> for Child<'p, 'v, P, V> {
 
 #[derive(Delegate)]
 struct Parent<'p, 'v, P, V> {
-    #[by(Trait)]
+    #[to(Trait)]
     child: Child<'p, 'v, P, V>,
 }
 

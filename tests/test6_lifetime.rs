@@ -1,8 +1,8 @@
-use auto_delegate_macros::{Delegate, delegate_trait};
+use auto_delegate_macros::{delegate, Delegate};
 
 /// 複数のトレイトを実装したフィールドから、
 /// それぞれの処理を委譲できるようにします。
-#[delegate_trait]
+#[delegate]
 trait StringRef<'a> {
     fn str_ref(&'a self) -> &'a str;
 }
@@ -22,15 +22,13 @@ impl<'a> StringRef<'a> for Child<'a> {
 
 impl<'a> Child<'a> {
     pub fn new(name: &'a str) -> Self {
-        Self {
-            name
-        }
+        Self { name }
     }
 }
 
 #[derive(Delegate)]
 struct Parent<'a> {
-    #[by(StringRef)]
+    #[to(StringRef)]
     child: Child<'a>,
 }
 
@@ -38,7 +36,7 @@ struct Parent<'a> {
 impl<'a> Parent<'a> {
     pub fn new(name: &'a str) -> Self {
         Self {
-            child: Child::new(name)
+            child: Child::new(name),
         }
     }
 }

@@ -13,18 +13,19 @@ mod delegate_trait;
 mod ident;
 mod macro_marker;
 mod span;
-mod trait_item;
 mod syn;
+mod trait_item;
+mod attribute;
 
 #[proc_macro_attribute]
-pub fn delegate_trait(attr: TokenStream, input: TokenStream) -> TokenStream {
+pub fn delegate(attr: TokenStream, input: TokenStream) -> TokenStream {
     let output = expand_delegate_trait(attr, input.clone());
     expand_join(input, output)
 }
 
 
-#[proc_macro_derive(Delegate, attributes(by))]
-pub fn delegate(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(Delegate, attributes(to))]
+pub fn derive_delegate(input: TokenStream) -> TokenStream {
     expand_delegate(input).into()
 }
 

@@ -1,4 +1,4 @@
-use crate::common::increment::Addr;
+use crate::common::increment::Increment;
 use crate::common::increment::parent::IncrementParent;
 
 mod common;

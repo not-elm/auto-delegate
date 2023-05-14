@@ -1,5 +1,6 @@
 use crate::common::addr::Addr;
 
+#[derive(Default)]
 pub struct AddChild {}
 
 
@@ -9,9 +10,3 @@ impl Addr for AddChild {
     }
 }
 
-
-impl Default for AddChild {
-    fn default() -> Self {
-        Self {}
-    }
-}
