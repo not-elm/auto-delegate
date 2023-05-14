@@ -36,15 +36,16 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
     let (s, e) = ident_prefix_and_suffix(item.ident.clone());
 
     let expand_impl = |macro_maker_ident: TokenStream2| {
+        let impl_generic = proc_macro2::Ident::new("MacroMakerImpl", Span::call_site());
+
+        let trait_bound_generic = proc_macro2::Ident::new("TraitBound", Span::call_site());
+
         let trait_fn: Vec<TokenStream2> = TraitFnIter::new(item.clone().items)
-            .map(|meta| meta.expand_fn())
+            .map(|meta| meta.expand_fn(&quote::quote!(#trait_bound_generic)))
             .try_collect()?;
 
         let lifetime_bound = expand_lifetimes_bound(item);
 
-        let impl_generic = proc_macro2::Ident::new("MacroMakerImpl", Span::call_site());
-
-        let trait_bound_generic = proc_macro2::Ident::new("TraitBound", Span::call_site());
 
         let where_generics = expand_where_bound_without_where_token(&item.generics);
 

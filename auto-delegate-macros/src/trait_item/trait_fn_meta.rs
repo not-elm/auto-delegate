@@ -15,19 +15,19 @@ impl TraitFnMeta {
     }
 
 
-    pub fn expand_fn(&self) -> syn::Result<TokenStream2> {
+    pub fn expand_fn(&self, trait_name: &TokenStream2) -> syn::Result<TokenStream2> {
         let fn_name = self.fn_name();
         let output = self.output();
         let fn_inputs = TraitFnInputs::new(self.0.sig.inputs.clone());
 
         let args = fn_inputs.expand_args()?;
-        let inputs = fn_inputs.expand_inputs();
-        let delegate = fn_inputs.expand_delegate_method();
+      
+        let delegate = fn_inputs.expand_delegate_method(fn_name, trait_name);
         let generics_brackets = expand_generics_with_brackets(&self.0.sig.generics);
 
         Ok(quote::quote! {
             fn #fn_name #generics_brackets(#args) #output{
-                #delegate.#fn_name(#inputs)
+                #delegate
             }
         })
     }

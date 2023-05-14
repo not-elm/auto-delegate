@@ -6,7 +6,10 @@ use crate::common::addr::Addr;
 use crate::common::increment::Increment;
 
 #[delegate]
-pub trait Readable<T> where T: Debug + Default {
+pub trait Readable<T>
+where
+    T: Debug + Default,
+{
     fn read(&self) -> &T;
 }
 
@@ -27,14 +30,20 @@ impl<T: Debug + Default> Default for MultipleChild<T> {
 }
 
 
-impl<T> Addr for MultipleChild<T> where T: Debug + Default {
+impl<T> Addr for MultipleChild<T>
+where
+    T: Debug + Default,
+{
     fn add(&self, x1: usize, x2: usize) -> usize {
         x1 + x2
     }
 }
 
 
-impl<T> Increment for MultipleChild<T> where T: Debug + Default {
+impl<T> Increment for MultipleChild<T>
+where
+    T: Debug + Default,
+{
     fn increment(&mut self) -> usize {
         self.num += 1;
         self.num
@@ -42,9 +51,11 @@ impl<T> Increment for MultipleChild<T> where T: Debug + Default {
 }
 
 
-impl<T> Readable<T> for MultipleChild<T> where T: Debug + Default {
+impl<T> Readable<T> for MultipleChild<T>
+where
+    T: Debug + Default,
+{
     fn read(&self) -> &T {
         &self.value
     }
 }
-
