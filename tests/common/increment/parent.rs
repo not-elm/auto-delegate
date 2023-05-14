@@ -4,6 +4,6 @@ use crate::common::increment::child::IncrementChild;
 
 #[derive(Default, Delegate)]
 pub struct IncrementParent {
-    #[to(Addr)]
+    #[to(Increment)]
     child: IncrementChild,
 }

@@ -6,11 +6,5 @@ pub mod parent;
 
 #[delegate]
 pub trait Addr {
-    fn add(
-        &self,
-        x1: usize,
-        x2: usize) -> usize;
+    fn add(&self, x1: usize, x2: usize) -> usize;
 }
-
-
-

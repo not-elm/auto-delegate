@@ -6,7 +6,7 @@ use crate::attribute::{find_by_attribute, trait_names};
 pub struct ByField {
     field_name: Ident,
     field_ty: syn::Type,
-    _trait_names: Vec<Ident>,
+    trait_names: Vec<Ident>,
 }
 
 
@@ -22,7 +22,7 @@ impl ByField {
 
     #[allow(unused)]
     pub fn trait_names_ref(&self) -> &Vec<Ident> {
-        &self._trait_names
+        &self.trait_names
     }
 }
 
@@ -53,7 +53,7 @@ impl Iterator for ByFields {
             Some(ByField {
                 field_name: field.ident.unwrap(),
                 field_ty: field.ty,
-                _trait_names: trait_names,
+                trait_names,
             })
         } else {
             self.next()
