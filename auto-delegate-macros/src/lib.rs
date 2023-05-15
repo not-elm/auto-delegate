@@ -6,7 +6,7 @@
 use proc_macro::TokenStream;
 
 use crate::delegate_trait::expand_delegate_trait;
-use crate::derive_delegate::expand_delegate;
+use crate::derive_delegate::expand_derive_delegate;
 
 mod derive_delegate;
 mod delegate_trait;
@@ -26,7 +26,7 @@ pub fn delegate(attr: TokenStream, input: TokenStream) -> TokenStream {
 
 #[proc_macro_derive(Delegate, attributes(to))]
 pub fn derive_delegate(input: TokenStream) -> TokenStream {
-    expand_delegate(input).into()
+    expand_derive_delegate(input).into()
 }
 
 

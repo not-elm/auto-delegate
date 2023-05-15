@@ -1,27 +1,22 @@
 use proc_macro2::Ident;
-use syn::__private::TokenStream2;
 use syn::ItemEnum;
+use syn::__private::TokenStream2;
 
 use crate::attribute::{find_to_attribute, syn_error_must_attach_to_attribute, trait_names};
 use crate::ident::ident_prefix_and_suffix;
 
 pub fn try_expand_derive_enum(item_enum: &ItemEnum) -> syn::Result<TokenStream2> {
-    let enum_name = &item_enum.ident;
-
     let delegate_by_ref = expand_impl_delegate_by_ref(item_enum);
-
     let delegate_by_mut = expand_impl_delegate_by_mut(item_enum);
 
-    let to_attr = find_to_attribute(&item_enum.attrs)
-        .ok_or(syn_error_must_attach_to_attribute())?;
+    let to_attr = find_to_attribute(&item_enum.attrs).ok_or(syn_error_must_attach_to_attribute())?;
 
-    let trait_names = trait_names(&to_attr)
-        .ok_or(syn_error_must_attach_to_attribute())?;
+    let trait_names = trait_names(&to_attr).ok_or(syn_error_must_attach_to_attribute())?;
 
     let expand_impls = trait_names
         .into_iter()
         .map(|trait_name| {
-            expand_impl_macro_marker(trait_name, enum_name, &delegate_by_ref, &delegate_by_mut)
+            expand_impl_macro_marker(trait_name, item_enum, &delegate_by_ref, &delegate_by_mut)
         });
 
     Ok(quote::quote! {
@@ -32,15 +27,18 @@ pub fn try_expand_derive_enum(item_enum: &ItemEnum) -> syn::Result<TokenStream2>
 
 fn expand_impl_macro_marker(
     trait_name: Ident,
-    enum_name: &Ident,
+    item_enum: &ItemEnum,
     delegate_by_ref: &TokenStream2,
     delegate_by_mut: &TokenStream2,
 ) -> TokenStream2 {
-    let (s, e) = ident_prefix_and_suffix(trait_name);
+    let (s, e) = ident_prefix_and_suffix(trait_name.clone());
+    let enum_name = &item_enum.ident;
+
+    let generics = &item_enum.generics;
 
     quote::quote! {
-        impl auto_delegate::MacroMarker<#s, #e> for #enum_name{
-            type DelegateType = dyn Calc;
+        impl #generics auto_delegate::MacroMarker<#s, #e> for #enum_name #generics{
+            type DelegateType = dyn #trait_name #generics;
 
             #delegate_by_ref
 

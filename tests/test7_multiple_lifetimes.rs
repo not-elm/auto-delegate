@@ -52,8 +52,7 @@ fn main() {
     let name1 = "Rust";
     let name2 = "Kotlin";
 
-    // let parent = Parent::new(name1, name2);
-    let parent = Child::new(name1, name2);
+    let parent = Parent::new(name1, name2);
 
     assert_eq!(parent.name1(), "Rust");
     assert_eq!(parent.name2(), "Kotlin");

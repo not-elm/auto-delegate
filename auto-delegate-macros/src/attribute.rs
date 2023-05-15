@@ -14,10 +14,8 @@ pub fn find_to_attribute(attrs: &Vec<Attribute>) -> Option<Attribute> {
 }
 
 
-
-pub fn syn_error_must_attach_to_attribute() -> syn::Error{
-
-    syn::Error::new(Span::call_site(),"Must be to attributes")
+pub fn syn_error_must_attach_to_attribute() -> syn::Error {
+    syn::Error::new(Span::call_site(), "Must be to attributes")
 }
 
 

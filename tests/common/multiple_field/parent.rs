@@ -17,6 +17,7 @@ impl<T> MultipleParent<T>
     where
         T: Debug + Default,
 {
+    #[allow(unused)]
     pub fn new() -> MultipleParent<T> {
         Self {
             child: MultipleChild::default(),
