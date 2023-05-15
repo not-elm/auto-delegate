@@ -1,8 +1,8 @@
-use proc_macro2::{Ident, TokenStream};
+use proc_macro2::{Ident, Span, TokenStream};
 use quote::ToTokens;
 use syn::Attribute;
 
-pub fn find_by_attribute(attrs: &Vec<Attribute>) -> Option<Attribute> {
+pub fn find_to_attribute(attrs: &Vec<Attribute>) -> Option<Attribute> {
     attrs
         .iter()
         .find(|attr| {
@@ -14,12 +14,19 @@ pub fn find_by_attribute(attrs: &Vec<Attribute>) -> Option<Attribute> {
 }
 
 
-pub fn trait_names(by_attr: &Attribute) -> Option<Vec<Ident>> {
+
+pub fn syn_error_must_attach_to_attribute() -> syn::Error{
+
+    syn::Error::new(Span::call_site(),"Must be to attributes")
+}
+
+
+pub fn trait_names(to_attr: &Attribute) -> Option<Vec<Ident>> {
     let mut tokens = TokenStream::new();
-    by_attr.to_tokens(&mut tokens);
+    to_attr.to_tokens(&mut tokens);
 
     let mut trait_names: Vec<Ident> = Vec::new();
-    by_attr
+    to_attr
         .parse_nested_meta(|meta| {
             meta.path
                 .segments

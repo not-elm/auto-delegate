@@ -5,10 +5,10 @@
 
 use proc_macro::TokenStream;
 
-use crate::delegate_struct::expand_delegate;
 use crate::delegate_trait::expand_delegate_trait;
+use crate::derive_delegate::expand_delegate;
 
-mod delegate_struct;
+mod derive_delegate;
 mod delegate_trait;
 mod ident;
 mod macro_marker;
@@ -19,7 +19,7 @@ mod attribute;
 
 #[proc_macro_attribute]
 pub fn delegate(attr: TokenStream, input: TokenStream) -> TokenStream {
-    let output = expand_delegate_trait(attr, input.clone());
+    let output: proc_macro2::TokenStream = expand_delegate_trait(attr, input.clone());
     expand_join(input, output)
 }
 

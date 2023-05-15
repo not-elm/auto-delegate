@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "auto-delegate-macros",
+    "auto-delegate-macros"
 ]
 
 

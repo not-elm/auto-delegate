@@ -1,61 +1,50 @@
 #![feature(impl_trait_in_assoc_type)]
 
-use std::ops::Deref;
-use std::rc::Rc;
-use auto_delegate::MacroMarker;
-use auto_delegate_macros::delegate;
+
+use auto_delegate_macros::{delegate, Delegate};
 
 #[delegate]
 trait Calc {
     fn calc(&mut self, x1: usize, x2: usize) -> &usize;
 }
 
-struct C1{
-    num: usize
-}
-impl C1 {
-    fn hello(
-        &mut self,
-        f: impl FnOnce(&mut dyn Calc) -> &usize) -> &usize {
-        f(self)
-    }
+struct CalcAdd {
+    num: usize,
 }
 
-impl Calc for C1 {
+
+impl Calc for CalcAdd {
     fn calc(&mut self, x1: usize, x2: usize) -> &usize {
         self.num = x1 + x2;
         &self.num
     }
 }
 
-struct C2;
+struct CalcSub {
+    num: usize,
+}
 
-impl Calc for C2 {
+impl Calc for CalcSub {
     fn calc(&mut self, x1: usize, x2: usize) -> &usize {
-        todo!()
-    }
-}
-
-enum C {
-    C1(C1),
-    C2(C2),
-}
-
-
-impl MacroMarker<'c', 'c'> for C {
-    type DelegateType = dyn Calc;
-
-    fn delegate_by_ref<'a, Output: 'a>(&'a self, f: impl FnOnce(&'a Self::DelegateType) -> Output) -> Output {
-        match self {
-            Self::C1(c1) => f(c1),
-            Self::C2(c2) => f(c2)
-        }
-    }
-
-    fn delegate_by_mut<'a, Output: 'a>(&'a mut self, f: impl FnOnce(&'a mut Self::DelegateType) -> Output) -> Output {
-        todo!()
+        self.num = x1 - x2;
+        &self.num
     }
 }
 
 
+#[derive(Delegate)]
+#[to(Calc)]
+enum EnumCalc {
+    Add(CalcAdd),
+    Sub(CalcSub),
+}
 
+
+fn main() {
+    let mut c = EnumCalc::Add(CalcAdd { num: 0 });
+    assert_eq!(*c.calc(3, 5), 8);
+
+
+    let mut c = EnumCalc::Sub(CalcSub { num: 0 });
+    assert_eq!(*c.calc(3, 2), 1);
+}

@@ -16,4 +16,5 @@ fn tests() {
     t.pass("tests/test12_generics_where.rs");
     t.pass("tests/test13_multiple_delegate_traits.rs");
     t.pass("tests/test14_multiple_fields.rs");
+    t.pass("tests/test15_enum.rs");
 }
