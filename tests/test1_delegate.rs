@@ -1,4 +1,4 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate::{delegate, Delegate};
 
 /// Delegate及びby属性によって自動で委譲が実装させるようにします。
 ///

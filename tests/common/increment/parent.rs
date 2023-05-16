@@ -1,4 +1,4 @@
-use auto_delegate_macros::Delegate;
+use auto_delegate::Delegate;
 
 use crate::common::increment::child::IncrementChild;
 
