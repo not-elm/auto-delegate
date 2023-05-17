@@ -20,7 +20,7 @@ pub fn expand_derive_delegate(input: TokenStream) -> proc_macro2::TokenStream {
     }
 
 
-    syn::Error::new(Span::call_site(), "").to_compile_error()
+    syn::Error::new(Span::call_site(), "Inherits must be Enum or Structs.").to_compile_error()
 }
 
 

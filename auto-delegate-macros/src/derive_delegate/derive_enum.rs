@@ -2,16 +2,16 @@ use proc_macro2::Ident;
 use syn::__private::TokenStream2;
 use syn::ItemEnum;
 
-use crate::attribute::{find_to_attribute, syn_error_must_attach_to_attribute, trait_names};
+use crate::attribute::{find_to_attribute, syn_error_least_one_give_to_attribute, syn_error_least_one_trait, trait_names};
 use crate::macro_marker::expand_macro_maker_ident;
 
 pub fn try_expand_derive_enum(item_enum: &ItemEnum) -> syn::Result<TokenStream2> {
     let delegate_by_ref = expand_impl_delegate_by_ref(item_enum);
     let delegate_by_mut = expand_impl_delegate_by_mut(item_enum);
 
-    let to_attr = find_to_attribute(&item_enum.attrs).ok_or(syn_error_must_attach_to_attribute())?;
+    let to_attr = find_to_attribute(&item_enum.attrs).ok_or(syn_error_least_one_give_to_attribute())?;
 
-    let trait_names = trait_names(&to_attr).ok_or(syn_error_must_attach_to_attribute())?;
+    let trait_names = trait_names(&to_attr).ok_or(syn_error_least_one_trait())?;
 
     let expand_impls = trait_names
         .into_iter()

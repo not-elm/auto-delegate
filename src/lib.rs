@@ -23,6 +23,4 @@ macro_rules! expand_macro_maker {
 }
 
 
-
-
 expand_macro_maker!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD);
