@@ -1,12 +1,21 @@
 # Auto Delegate
 
+## Supports `no_std`
+
+This Library is Created without std crates.
+
 ## Description
 
 Auto delegate allows you that automatic impl of traits and delegate their handling to children.
 
 ## Usage
 
-### Example: Delegate by children with the struct
+### Struct
+
+Give 'delegate' attribute to the trait which to be delegated,
+and give 'Delegate' to the structure requesting delegation
+
+#### Example1
 
 ```rust
 use auto_delegate::{Delegate, delegate};
@@ -39,7 +48,122 @@ fn main() {
 }
 ```
 
-### Example: Delegate by children with the Enum
+#### Example2: Generics-type Child
+
+It is possible to use generic type for member types
+
+```rust
+#[derive(Default, Delegate)]
+struct Parent<T: Default + Calc> {
+    #[to(Calc)]
+    child: T,
+}
+
+
+fn main() {
+    let parent = Parent::<CalcAdd>::default();
+
+    assert_eq!(parent.calc(3, 2), 5);
+}
+```
+
+#### Example3: Multiple traits and fields
+
+```rust
+use auto_delegate::*;
+
+#[delegate]
+trait Calc {
+    fn calc(&self, x1: usize, x2: usize) -> usize;
+}
+
+
+#[derive(Default)]
+struct CalcAdd;
+
+
+impl Calc for CalcAdd {
+    fn calc(&self, x1: usize, x2: usize) -> usize {
+        x1 + x2
+    }
+}
+
+
+#[delegate]
+trait Movable {
+    fn move_to(&mut self, pos: (usize, usize));
+
+    fn pos(&self) -> (usize, usize);
+}
+
+
+#[delegate]
+trait Resizable {
+    fn resize(&mut self, width: usize, height: usize);
+
+    fn size(&self) -> (usize, usize);
+}
+
+
+#[derive(Default)]
+struct Transform2D {
+    pos: (usize, usize),
+    width: usize,
+    height: usize
+}
+
+
+impl Movable for Transform2D {
+    fn move_to(&mut self, pos: (usize, usize)) {
+        self.pos = pos;
+    }
+
+    fn pos(&self) -> (usize, usize) {
+        self.pos
+    }
+}
+
+
+impl Resizable for Transform2D {
+    fn resize(&mut self, width: usize, height: usize) {
+        self.width = width;
+        self.height = height;
+    }
+
+    fn size(&self) -> (usize, usize) {
+        (self.width, self.height)
+    }
+}
+
+
+#[derive(Default, Delegate)]
+struct Parent<T: Default + Calc> {
+    #[to(Movable, Resizable)]
+    transform: Transform2D,
+
+    #[to(Calc)]
+    calculator: T
+}
+
+
+fn main() {
+    let mut parent = Parent::<CalcAdd>::default();
+
+    assert_eq!(parent.calc(3, 2), 5);
+
+    parent.move_to((10, 11));
+    assert_eq!(parent.pos(), (10, 11));
+
+    parent.resize(100, 120);
+    assert_eq!(parent.size(), (100, 120));
+}
+```
+
+### Enum
+
+Like Struct, Enum can be delegated using Delegate.
+
+#### Example
 
 ```rust
 use auto_delegate::{delegate, Delegate};
@@ -62,7 +186,7 @@ impl Calc for CalcAdd {
 struct CalcSub;
 
 impl Calc for CalcSub {
-    fn calc(&mut self, x1: usize, x2: usize) -> usize {
+    fn calc(&self, x1: usize, x2: usize) -> usize {
         x1 - x2
     }
 }
@@ -86,23 +210,3 @@ fn main() {
 }
 ```
 
-## Benchmarks
-
-### Struct
-
-```
-Running benches/cmp_handwritten_struct.rs (target/release/deps/cmp_handwritten_struct-109bf81facbe75f1)
-generate_vs_handwritten/generate
-                        time:   [1.9793 ns 1.9840 ns 1.9907 ns]
-                        change: [+0.2554% +0.6270% +1.0228%] (p = 0.00 < 0.05)
-                        Change within noise threshold.
-                        
-Found 5 outliers among 100 measurements (5.00%)
-  3 (3.00%) high mild
-  2 (2.00%) high severe
-generate_vs_handwritten/handwritten
-                        time:   [1.9737 ns 1.9799 ns 1.9874 ns]
-                        change: [-0.2267% +0.1596% +0.5187%] (p = 0.42 > 0.05)
-                        No change in performance detected.
-
-```

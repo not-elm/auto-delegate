@@ -19,9 +19,32 @@ mod trait_item;
 mod attribute;
 
 
+/// The trait given this attribute are eligible for delegation.
+///
+/// ```rust
+/// use auto_delegate::delegate;
+///
+/// #[delegate]
+/// pub trait Readable{
+///     fn read(&self) -> String;
+/// }
+/// ```
+#[proc_macro_attribute]
+pub fn delegate(attr: TokenStream, input: TokenStream) -> TokenStream {
+    let output: proc_macro2::TokenStream = expand_delegate_trait(attr, input.clone());
+    expand_join(input, output)
+}
+
+
+/// Implement the specified trait and delegate its processing to the children.
 ///
 ///
-/// ## Example1: Delegate To Child
+/// ## Note
+///
+/// The trait to be delegated must be given a 'delegate'.
+///
+///
+/// ## Example1:
 ///
 /// ```rust
 /// use auto_delegate::*;
@@ -52,9 +75,9 @@ mod attribute;
 /// ```
 ///
 ///
-/// ## Example2: Delegate To Child
+/// ## Example2: Generics-type Child
 ///
-/// It is possible to use generic param for member types
+/// It is possible to use generic type for member types
 ///
 /// ```rust
 /// use auto_delegate::*;
@@ -67,11 +90,13 @@ mod attribute;
 /// #[derive(Default)]
 /// struct CalcAdd;
 ///
+///
 /// impl Calc for CalcAdd {
 ///     fn calc(&self, x1: usize, x2: usize) -> usize {
 ///         x1 + x2
 ///     }
 /// }
+///
 ///
 /// #[derive(Default, Delegate)]
 /// struct Parent<T: Default + Calc>{
@@ -85,7 +110,7 @@ mod attribute;
 /// assert_eq!(parent.calc(3, 2), 5);
 /// ```
 ///
-/// ## Example3: Delegate To Child
+/// ## Example3: Multiple traits and fields
 ///
 /// It is possible to use generic param for member types
 ///
@@ -123,6 +148,7 @@ mod attribute;
 ///
 ///     fn size(&self) -> (usize, usize);
 /// }
+///
 ///
 /// #[derive(Default)]
 /// struct Transform2D{
@@ -175,13 +201,55 @@ mod attribute;
 /// assert_eq!(parent.size(), (100, 120));
 /// ```
 ///
-#[proc_macro_attribute]
-pub fn delegate(attr: TokenStream, input: TokenStream) -> TokenStream {
-    let output: proc_macro2::TokenStream = expand_delegate_trait(attr, input.clone());
-    expand_join(input, output)
-}
-
-
+/// ## Example4: Enum
+///
+///
+/// ```rust
+/// use auto_delegate::{delegate, Delegate};
+///
+/// #[delegate]
+/// trait Calc {
+///     fn calc(&self, x1: usize, x2: usize) -> usize;
+/// }
+///
+///
+/// #[derive(Default)]
+/// struct CalcAdd;
+///
+///
+/// impl Calc for CalcAdd {
+///     fn calc(&self, x1: usize, x2: usize) -> usize {
+///         x1 + x2
+///     }
+/// }
+///
+///
+/// #[derive(Default)]
+/// struct CalcSub;
+///
+///
+/// impl Calc for CalcSub {
+///     fn calc(&self, x1: usize, x2: usize) -> usize {
+///         x1 - x2
+///     }
+/// }
+///
+///
+/// #[derive(Delegate)]
+/// #[to(Calc)]
+/// enum EnumCalc {
+///     Add(CalcAdd),
+///     Sub(CalcSub),
+/// }
+///
+///
+/// let c = EnumCalc::Add(CalcAdd::default());
+/// assert_eq!(c.calc(3, 5), 8);
+///
+/// let c = EnumCalc::Sub(CalcSub::default());
+/// assert_eq!(c.calc(3, 2), 1);
+/// ```
+///
 #[proc_macro_derive(Delegate, attributes(to))]
 pub fn derive_delegate(input: TokenStream) -> TokenStream {
     expand_derive_delegate(input).into()

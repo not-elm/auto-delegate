@@ -1,3 +1,5 @@
+#![no_std]
+
 pub use auto_delegate_macros::{
     Delegate,
     delegate,
@@ -7,16 +9,16 @@ macro_rules! expand_macro_maker {
     ($($g: tt), *) => {
         #[doc(hidden)]
         pub trait MacroMarker<$(const $g: char,)*> {
-            type DelegateType: ?Sized;
+            type DelegateType: ?core::marker::Sized;
 
             fn delegate_by_ref<'a, Output: 'a>(
                 &'a self,
-                f: impl FnOnce(&'a Self::DelegateType) -> Output,
+                f: impl core::ops::FnOnce(&'a Self::DelegateType) -> Output,
             ) -> Output;
 
             fn delegate_by_mut<'a, Output: 'a>(
                 &'a mut self,
-                f: impl FnOnce(&'a mut Self::DelegateType) -> Output,
+                f: impl core::ops::FnOnce(&'a mut Self::DelegateType) -> Output,
             ) -> Output;
         }
     };
