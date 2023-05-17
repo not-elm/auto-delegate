@@ -35,7 +35,7 @@ path = "tests/progress.rs"
 
 
 [dependencies]
-auto-delegate-macros = { path = "./auto-delegate-macros", version = "0.0.1" }
+auto-delegate-macros = "0.0.1"
 
 
 [dev-dependencies]
