@@ -1,6 +1,6 @@
 [package]
 name = "auto-delegate"
-authors = ["elm-register"]
+authors = ["elm-register <elmregister@gmail.com>"]
 version = "0.0.1"
 edition = "2021"
 readme = "README.md"

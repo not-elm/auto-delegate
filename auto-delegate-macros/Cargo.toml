@@ -2,7 +2,7 @@
 name = "auto-delegate-macros"
 version = "0.0.1"
 edition = "2021"
-authors = ["elm-register"]
+authors = ["elm-register <elmregister@gmail.com>"]
 repository = "https://github.com/elm-register/auto-delegate"
 keywords = ["delegate", "trait", "macros"]
 description = "Auto delegate allows you that automatic impl of traits and delegate their handling to child members."
