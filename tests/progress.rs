@@ -2,15 +2,15 @@
 #[test]
 fn tests() {
     let t = trybuild::TestCases::new();
-    t.pass("tests/test1_delegate.rs");
-    t.pass("tests/test2_nested_modules.rs");
-    t.pass("tests/test3_delegate_with_args.rs");
-    t.pass("tests/test4_delegate_tuple.rs");
-    t.pass("tests/test5_delegate_reference.rs");
-    t.pass("tests/test6_lifetime.rs");
-    t.pass("tests/test7_multiple_lifetimes.rs");
-    t.pass("tests/test8_generics.rs");
-    t.pass("tests/test9_multiple_generics.rs");
+    t.pass("tests/test01_delegate.rs");
+    t.pass("tests/test02_nested_modules.rs");
+    t.pass("tests/test03_delegate_with_args.rs");
+    t.pass("tests/test04_tuple.rs");
+    t.pass("tests/test05_reference.rs");
+    t.pass("tests/test06_lifetime.rs");
+    t.pass("tests/test07_multiple_lifetimes.rs");
+    t.pass("tests/test08_generics.rs");
+    t.pass("tests/test09_multiple_generics.rs");
     t.pass("tests/test10_type_slice.rs");
     t.pass("tests/test11_generics_bound.rs");
     t.pass("tests/test12_generics_where.rs");
@@ -18,5 +18,5 @@ fn tests() {
     t.pass("tests/test14_multiple_fields.rs");
     t.pass("tests/test15_enum.rs");
     t.pass("tests/test16_enum_multiple_traits.rs");
-    t.pass("tests/test17_generics_child.rs")
+    t.pass("tests/test17_child_type_is_generics.rs")
 }

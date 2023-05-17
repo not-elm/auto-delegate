@@ -1,4 +1,4 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate::{delegate, Delegate};
 
 #[delegate]
 pub trait MultipleNames<'a, 'b> {

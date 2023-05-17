@@ -1,7 +1,5 @@
 use auto_delegate_macros::{delegate, Delegate};
 
-/// 複数のトレイトを実装したフィールドから、
-/// それぞれの処理を委譲できるようにします。
 #[delegate]
 trait StringRef<'a> {
     fn str_ref(&'a self) -> &'a str;
@@ -25,6 +23,7 @@ impl<'a> Child<'a> {
         Self { name }
     }
 }
+
 
 #[derive(Delegate)]
 struct Parent<'a> {

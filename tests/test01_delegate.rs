@@ -1,8 +1,5 @@
 use auto_delegate::{delegate, Delegate};
 
-/// Delegate及びby属性によって自動で委譲が実装させるようにします。
-///
-/// ただし現時点では、引数は取れません。
 #[delegate]
 trait Adder {
     fn increment(&mut self) -> usize;

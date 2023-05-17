@@ -1,4 +1,4 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate::{delegate, Delegate};
 
 #[delegate]
 trait Accessible<T> {

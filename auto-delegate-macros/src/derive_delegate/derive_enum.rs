@@ -1,9 +1,9 @@
 use proc_macro2::Ident;
-use syn::ItemEnum;
 use syn::__private::TokenStream2;
+use syn::ItemEnum;
 
 use crate::attribute::{find_to_attribute, syn_error_must_attach_to_attribute, trait_names};
-use crate::ident::ident_prefix_and_suffix;
+use crate::macro_marker::expand_macro_maker_ident;
 
 pub fn try_expand_derive_enum(item_enum: &ItemEnum) -> syn::Result<TokenStream2> {
     let delegate_by_ref = expand_impl_delegate_by_ref(item_enum);
@@ -31,13 +31,13 @@ fn expand_impl_macro_marker(
     delegate_by_ref: &TokenStream2,
     delegate_by_mut: &TokenStream2,
 ) -> TokenStream2 {
-    let (s, e) = ident_prefix_and_suffix(trait_name.clone());
+    let marker_ident = expand_macro_maker_ident(trait_name.clone());
     let enum_name = &item_enum.ident;
 
     let generics = &item_enum.generics;
 
     quote::quote! {
-        impl #generics auto_delegate::MacroMarker<#s, #e> for #enum_name #generics{
+        impl #generics #marker_ident for #enum_name #generics{
             type DelegateType = dyn #trait_name #generics;
 
             #delegate_by_ref

@@ -1,11 +1,10 @@
 use proc_macro::TokenStream;
 
 use proc_macro2::Span;
-use syn::__private::TokenStream2;
 use syn::{ItemTrait, LifetimeParam};
+use syn::__private::TokenStream2;
 
-use crate::ident::ident_prefix_and_suffix;
-use crate::macro_marker::expand_macro_maker_ident;
+use crate::macro_marker::{expand_macro_maker_name, expand_macro_marker_generics};
 use crate::syn::syn_generics::{
     expand_generic_param_without_bound, expand_generics_separate_colon,
     expand_where_bound_without_where_token,
@@ -36,9 +35,10 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
     });
 
     let trait_name = expand_trait_name(item);
-    let (s, e) = ident_prefix_and_suffix(item.ident.clone());
+    let macro_marker_name = expand_macro_maker_name();
+    let macro_marker_generics = expand_macro_marker_generics(item.ident.clone());
 
-    let expand_impl = |macro_maker_ident: TokenStream2| {
+    let expand_impl = || {
         let impl_generic = proc_macro2::Ident::new("MacroMakerImpl", Span::call_site());
 
         let trait_bound_generic = proc_macro2::Ident::new("TraitBound", Span::call_site());
@@ -54,7 +54,7 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
 
         Ok(quote::quote! {
          impl<#lifetime #impl_generic, #trait_bound_generic> #trait_name for #impl_generic
-             where #impl_generic: #macro_maker_ident<#s, #e, DelegateType = #trait_bound_generic>,
+             where #impl_generic: #macro_marker_name<#macro_marker_generics DelegateType = #trait_bound_generic>,
                    #trait_bound_generic : #lifetime_bound,
                    #where_generics
             {
@@ -63,7 +63,7 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
         })
     };
 
-    expand_impl(expand_macro_maker_ident())
+    expand_impl()
 }
 
 
