@@ -13,3 +13,7 @@ proc-macro = true
 quote = "1.0.23"
 proc-macro2 = "1.0.51"
 syn = { version = "2.0.15", features = ["full", "extra-traits", "derive"] }
+
+
+[dev-dependencies]
+auto-delegate = { path = ".." }

@@ -1,14 +1,30 @@
+[package]
+name = "auto-delegate"
+authors = ["elm-register"]
+version = "0.0.1"
+edition = "2021"
+readme = "README.md"
+repository = "https://github.com/elm-register/auto-delegate"
+keywords = ["delegate", "trait"]
+description = "Auto delegate allows you that automatic impl of traits and delegate their handling to children."
+
+
 [workspace]
 members = [
     "auto-delegate-macros"
 ]
 
 
-[package]
-name = "auto-delegate"
-version = "0.1.0"
-edition = "2021"
+[[bench]]
+name = "cmp_handwritten_struct"
+path = "benches/cmp_handwritten_struct.rs"
+harness = false
 
+
+[[bench]]
+name = "cmp_handwritten_enum"
+path = "benches/cmp_handwritten_enum.rs"
+harness = false
 
 
 [[test]]
@@ -17,10 +33,9 @@ path = "tests/progress.rs"
 
 
 [dependencies]
-syn = { version = "2.0.15", features = ["full", "extra-traits", "derive"] }
 auto-delegate-macros = { path = "./auto-delegate-macros" }
 
 
 [dev-dependencies]
 trybuild = "1.0.80"
-
+criterion = { version = "0.4.0", features = ["html_reports"] }

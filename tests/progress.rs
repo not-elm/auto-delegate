@@ -18,5 +18,5 @@ fn tests() {
     t.pass("tests/test14_multiple_fields.rs");
     t.pass("tests/test15_enum.rs");
     t.pass("tests/test16_enum_multiple_traits.rs");
-    // t.pass("tests/test17_enum_lifetime.rs");
+    t.pass("tests/test17_generics_child.rs")
 }

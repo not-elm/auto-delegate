@@ -3,7 +3,7 @@ pub use auto_delegate_macros::{
     delegate,
 };
 
-
+#[doc(hidden)]
 pub trait MacroMarker<const S: char, const E: char> {
     type DelegateType: ?Sized;
 
@@ -17,4 +17,3 @@ pub trait MacroMarker<const S: char, const E: char> {
         f: impl FnOnce(&'a mut Self::DelegateType) -> Output,
     ) -> Output;
 }
-

@@ -1,7 +1,4 @@
-#![feature(impl_trait_in_assoc_type)]
-
-
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate::{delegate, Delegate};
 
 #[delegate]
 trait Calc {
