@@ -23,7 +23,7 @@ pub fn expand_macro_maker_name() -> TokenStream2 {
 pub fn expand_macro_marker_generics(trait_ident: Ident) -> TokenStream2 {
     let str = ident_to_lower_string(trait_ident);
 
-    let mut chars = str.chars().into_iter();
+    let mut chars = str.chars();
 
     const GENERICS_COUNT: usize = 30;
 

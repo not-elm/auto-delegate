@@ -35,10 +35,11 @@ path = "tests/progress.rs"
 
 
 [dependencies]
-auto-delegate-macros = "0.0.2"
+auto-delegate-macros = { path = "./auto-delegate-macros" }
 
 
 [dev-dependencies]
 trybuild = "1.0.80"
 criterion = { version = "0.4.0", features = ["html_reports"] }
-#auto-delegate-macros = { path = "./auto-delegate-macros" }
+async-trait = "0.1.68"
+tokio = { version = "1.28.0", features = ["full"] }

@@ -2,7 +2,7 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::ToTokens;
 use syn::Attribute;
 
-pub fn find_to_attribute(attrs: &Vec<Attribute>) -> Option<Attribute> {
+pub fn find_to_attribute(attrs: &[Attribute]) -> Option<Attribute> {
     attrs
         .iter()
         .find(|attr| {

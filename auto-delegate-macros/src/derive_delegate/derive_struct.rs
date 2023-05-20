@@ -90,7 +90,7 @@ fn impl_macro_marker(
     struct_name: &Ident,
     delegate_field_name: &TokenStream2,
     delegate_filed_ty: &Type,
-    trait_names: &Vec<Ident>,
+    trait_names: &[Ident],
     generics: &Generics,
 )
     -> TokenStream2 {
