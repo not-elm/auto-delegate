@@ -20,4 +20,6 @@ fn tests() {
     t.pass("tests/test16_enum_multiple_traits.rs");
     t.pass("tests/test17_child_type_is_generics.rs");
     t.pass("tests/test18_new_type.rs");
+    t.pass("tests/test19_async_trait.rs");
+    t.pass("tests/test20_async_trait_with_fn_lifetime.rs");
 }
