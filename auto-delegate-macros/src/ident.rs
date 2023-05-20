@@ -1,5 +1,9 @@
 use proc_macro2::Ident;
+use syn::__private::TokenStream2;
 
+pub fn ident_to_token_stream(ident: &Ident) -> TokenStream2 {
+    quote::quote!(#ident)
+}
 
 
 pub fn ident_to_lower_string(ident: Ident) -> String {

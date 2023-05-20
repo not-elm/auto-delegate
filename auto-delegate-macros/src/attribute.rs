@@ -14,13 +14,18 @@ pub fn find_to_attribute(attrs: &Vec<Attribute>) -> Option<Attribute> {
 }
 
 
-pub fn syn_error_least_one_give_to_attribute() -> syn::Error {
+pub fn syn_error_not_found_to_attribute() -> syn::Error {
     syn::Error::new(Span::call_site(), "At least one 'to' attribute must be given.")
 }
 
 
-pub fn syn_error_least_one_trait() -> syn::Error {
+pub fn syn_error_not_found_trait_names() -> syn::Error {
     syn::Error::new(Span::call_site(), "At least one trait name must be specified.")
+}
+
+
+pub fn syn_error_not_found_fields() -> syn::Error {
+    syn::Error::new(Span::call_site(), "At least one field must exist.")
 }
 
 
