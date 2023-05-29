@@ -7,7 +7,13 @@ trait Calc {
 
 
 #[delegate]
-trait Increment: Calc {
+trait Label {
+    fn label(&self) -> String;
+}
+
+
+#[delegate]
+trait Increment: Calc + Label {
     fn increment(&mut self) -> usize;
 }
 
@@ -33,9 +39,15 @@ impl Calc for Child {
 }
 
 
+impl Label for Child {
+    fn label(&self) -> String {
+        String::from("add")
+    }
+}
+
 #[derive(Default, Delegate)]
 struct Parent {
-    #[to(Calc, Increment)]
+    #[to(Calc, Increment, Label)]
     child: Child,
 }
 
@@ -45,4 +57,5 @@ fn main() {
     assert_eq!(parent.increment(), 1);
     assert_eq!(parent.increment(), 2);
     assert_eq!(parent.calc(3, 2), 5);
+    assert_eq!(parent.label(), "add");
 }
