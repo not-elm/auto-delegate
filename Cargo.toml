@@ -38,8 +38,13 @@ path = "./examples/structs/async_trait.rs"
 
 
 [[example]]
-name = "one_trait"
+name = "enum_one_trait"
 path = "./examples/enums/one_trait.rs"
+
+
+[[example]]
+name = "enum_super_trait"
+path = "./examples/enums/super_trait.rs"
 
 
 [[bench]]
