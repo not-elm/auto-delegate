@@ -17,6 +17,31 @@ members = [
 ]
 
 
+[[example]]
+name = "multiple_traits_and_fields"
+path = "./examples/structs/multiple_traits_and_fields.rs"
+
+
+[[example]]
+name = "new_type"
+path = "./examples/structs/new_type.rs"
+
+
+[[example]]
+name = "super_trait"
+path = "./examples/structs/super_trait.rs"
+
+
+[[example]]
+name = "aync_trait"
+path = "./examples/structs/async_trait.rs"
+
+
+[[example]]
+name = "one_trait"
+path = "./examples/enums/one_trait.rs"
+
+
 [[bench]]
 name = "cmp_handwritten_struct"
 path = "benches/cmp_handwritten_struct.rs"
@@ -35,7 +60,7 @@ path = "tests/progress.rs"
 
 
 [dependencies]
-auto-delegate-macros = "0.0.4"
+auto-delegate-macros = { path = "./auto-delegate-macros" }
 
 
 [dev-dependencies]

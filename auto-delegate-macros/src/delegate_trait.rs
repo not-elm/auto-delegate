@@ -48,13 +48,13 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
             .try_collect()?;
 
         let lifetime_bound = expand_lifetimes_bound(item);
-
+        let super_traits = &item.supertraits;
 
         let where_generics = expand_where_bound_without_where_token(&item.generics);
 
         Ok(quote::quote! {
          impl<#lifetime #impl_generic, #trait_bound_generic> #trait_name for #impl_generic
-             where #impl_generic: #macro_marker_name<#macro_marker_generics DelegateType = #trait_bound_generic>,
+             where #impl_generic: #macro_marker_name<#macro_marker_generics DelegateType = #trait_bound_generic> + #super_traits,
                    #trait_bound_generic : #lifetime_bound,
                    #where_generics
             {
