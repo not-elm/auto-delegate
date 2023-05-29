@@ -24,4 +24,5 @@ fn tests() {
     t.pass("tests/test20_async_trait_with_fn_lifetime.rs");
     t.pass("tests/test21_super_trait.rs");
     t.pass("tests/test22_enum_super_trait.rs");
+    t.pass("tests/test23_super_trait_hand_written.rs");
 }
