@@ -13,7 +13,7 @@ categories = ["no-std"]
 
 [workspace]
 members = [
-    "auto-delegate-macros"
+    "macros"
 ]
 
 
@@ -65,7 +65,7 @@ path = "tests/progress.rs"
 
 
 [dependencies]
-auto-delegate-macros = "0.0.5"
+auto-delegate-macros = { path = "./macros" }
 
 
 [dev-dependencies]

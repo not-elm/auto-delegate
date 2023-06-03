@@ -36,11 +36,10 @@ impl TraitFnInputs {
             .filter_map(|args| match args {
                 FnArg::Typed(pat_type) => {
                     let ident = require_ident(&pat_type.pat).ok()?;
-                    Some(quote::quote! {#ident})
+                    Some(quote::quote! {#ident,})
                 }
                 _ => None,
-            })
-            .intersperse(quote::quote! {,});
+            });
 
         quote::quote! {
             #(#expand)*
@@ -56,7 +55,7 @@ impl TraitFnInputs {
 
         let expand = expand
             .into_iter()
-            .intersperse(quote::quote!(,));
+            .map(|f| quote::quote!(#f,));
 
         Ok(quote::quote! {
             #(#expand)*

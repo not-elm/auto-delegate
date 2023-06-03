@@ -1,10 +1,6 @@
-#![feature(iter_intersperse)]
-#![feature(core_intrinsics)]
-#![feature(proc_macro_span)]
-#![feature(iterator_try_collect)]
-
-
 use proc_macro::TokenStream;
+
+use ::syn::__private::TokenStream2;
 
 use crate::delegate_trait::expand_delegate_trait;
 use crate::derive_delegate::expand_derive_delegate;
@@ -268,3 +264,18 @@ fn expand_join(input: TokenStream, output: proc_macro2::TokenStream) -> TokenStr
 }
 
 
+pub(crate) fn intersperse(
+    separator: TokenStream2,
+    iter: impl Iterator<Item=TokenStream2>) -> Vec<TokenStream2> {
+    let mut tokens = Vec::<TokenStream2>::new();
+    for token in iter{
+        tokens.push(token);
+        tokens.push(separator.clone());
+    }
+
+    if !tokens.is_empty() {
+        tokens.remove(tokens.len() - 1);
+    }
+
+    tokens
+}

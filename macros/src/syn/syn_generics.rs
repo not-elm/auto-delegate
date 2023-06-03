@@ -1,6 +1,7 @@
 use proc_macro2::TokenStream;
 use syn::{GenericParam, Generics};
 use syn::__private::TokenStream2;
+use crate::intersperse;
 
 pub fn expand_generics_with_brackets(generics: &Generics) -> Option<TokenStream2> {
     expand_generics_separate_colon(generics)
@@ -13,12 +14,13 @@ pub fn expand_generics_with_brackets(generics: &Generics) -> Option<TokenStream2
 
 
 pub fn expand_generics_separate_colon(generics: &Generics) -> Option<TokenStream> {
-    let generics: Vec<TokenStream2> = generics
+    let generics: Vec<TokenStream2> = intersperse(
+        quote::quote!(,),
+        generics
         .params
         .iter()
         .map(|p| quote::quote!(#p))
-        .intersperse(quote::quote!(,))
-        .collect();
+    );
 
     if generics.is_empty() {
         None
@@ -35,7 +37,7 @@ pub fn expand_generics_with_brackets_without_bound(generics: &Generics) -> Token
         .params
         .iter()
         .map(expand_generic_param_without_bound)
-        .intersperse(quote::quote!(,))
+        .map(|token| quote::quote!(#token,))
         .collect();
 
     quote::quote! {

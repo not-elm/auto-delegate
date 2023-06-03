@@ -1,5 +1,3 @@
-#![feature(async_fn_in_trait)]
-
 use async_trait::async_trait;
 
 use auto_delegate::{Delegate, delegate};
