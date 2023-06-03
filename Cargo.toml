@@ -6,9 +6,10 @@ edition = "2021"
 readme = "README.md"
 repository = "https://github.com/elm-register/auto-delegate"
 keywords = ["delegate", "trait", "macros"]
-description = "Auto delegate allows you that automatic impl of traits and delegate their handling to child members."
-license-file = "MIT OR Apache-2.0"
+license = "MIT OR Apache-2.0"
 categories = ["no-std"]
+documentation = "https://docs.rs/auto-delegate/"
+description = "Auto delegate allows you that automatic impl of traits and delegate their handling to child members."
 
 
 [workspace]
