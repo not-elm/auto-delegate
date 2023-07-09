@@ -1,4 +1,4 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate_impl::{delegate, Delegate};
 
 #[delegate]
 trait Buffer {
@@ -6,7 +6,6 @@ trait Buffer {
 
     fn array<'b>(&mut self, array: &'b [u32]) -> &'b [u32];
 }
-
 
 #[derive(Default)]
 struct Child;
@@ -21,13 +20,11 @@ impl Buffer for Child {
     }
 }
 
-
 #[derive(Default, Delegate)]
 struct Parent {
     #[to(Buffer)]
     child: Child,
 }
-
 
 fn main() {
     let mut parent = Parent::default();

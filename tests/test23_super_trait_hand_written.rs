@@ -1,26 +1,22 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate_impl::{delegate, Delegate};
 
 trait Calc {
     fn calc(&self, x1: usize, x2: usize) -> usize;
 }
-
 
 #[delegate]
 trait Label: Calc {
     fn label(&self) -> String;
 }
 
-
 #[derive(Default)]
 struct CalcAdd;
-
 
 impl Label for CalcAdd {
     fn label(&self) -> String {
         String::from("add")
     }
 }
-
 
 impl Calc for CalcAdd {
     fn calc(&self, x1: usize, x2: usize) -> usize {
@@ -31,7 +27,6 @@ impl Calc for CalcAdd {
 #[derive(Default, Delegate)]
 #[to(Label)]
 struct Parent(CalcAdd);
-
 
 impl Calc for Parent {
     fn calc(&self, x1: usize, x2: usize) -> usize {

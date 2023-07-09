@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use auto_delegate_macros::delegate;
+use auto_delegate_impl::delegate;
 
 use crate::common::addr::Addr;
 use crate::common::increment::Increment;
@@ -13,12 +13,10 @@ where
     fn read(&self) -> &T;
 }
 
-
 pub struct MultipleChild<T> {
     num: usize,
     value: T,
 }
-
 
 impl<T: Debug + Default> Default for MultipleChild<T> {
     fn default() -> Self {
@@ -29,7 +27,6 @@ impl<T: Debug + Default> Default for MultipleChild<T> {
     }
 }
 
-
 impl<T> Addr for MultipleChild<T>
 where
     T: Debug + Default,
@@ -38,7 +35,6 @@ where
         x1 + x2
     }
 }
-
 
 impl<T> Increment for MultipleChild<T>
 where
@@ -49,7 +45,6 @@ where
         self.num
     }
 }
-
 
 impl<T> Readable<T> for MultipleChild<T>
 where

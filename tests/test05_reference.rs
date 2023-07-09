@@ -1,4 +1,4 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate_impl::{delegate, Delegate};
 
 /// 複数のメソッド、返り値がないメソッドを持つトレイトを委譲できるようにします。
 #[delegate]
@@ -10,11 +10,9 @@ trait StringRef {
     fn str_change(&mut self, new_val: &str) -> &str;
 }
 
-
 struct Child {
     str: String,
 }
-
 
 impl Default for Child {
     fn default() -> Self {
@@ -39,13 +37,11 @@ impl StringRef for Child {
     }
 }
 
-
 #[derive(Delegate, Default)]
 struct Parent {
     #[to(StringRef)]
     child: Child,
 }
-
 
 fn main() {
     let mut parent = Parent::default();

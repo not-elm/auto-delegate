@@ -1,11 +1,10 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate_impl::{delegate, Delegate};
 
 use crate::common::addr::Addr;
 use crate::common::increment::Increment;
 use crate::common::multiple_field::child::MultipleChild;
 
 mod common;
-
 
 #[delegate]
 trait Hello {
@@ -16,7 +15,6 @@ trait Hello {
 trait Number {
     fn num(&self) -> usize;
 }
-
 
 #[derive(Default)]
 struct HelloChild;

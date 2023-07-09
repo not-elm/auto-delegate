@@ -1,4 +1,4 @@
-use auto_delegate_macros::Delegate;
+use auto_delegate_impl::Delegate;
 
 use crate::common::addr::child::AddChild;
 

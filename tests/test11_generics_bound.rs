@@ -1,17 +1,15 @@
 use std::{marker::PhantomData, ops::Add};
 
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate_impl::{delegate, Delegate};
 
 #[delegate]
 trait Addr<Num: Add<Output = Num>> {
     fn add(&mut self, x1: Num, x2: Num) -> Num;
 }
 
-
 struct Child<Num: Add<Output = Num>> {
     _maker: PhantomData<Num>,
 }
-
 
 impl<Num: Add<Output = Num>> Addr<Num> for Child<Num> {
     fn add(&mut self, x1: Num, x2: Num) -> Num {
@@ -19,13 +17,11 @@ impl<Num: Add<Output = Num>> Addr<Num> for Child<Num> {
     }
 }
 
-
 #[derive(Delegate)]
 struct Parent<Num: Add<Output = Num>> {
     #[to(Addr)]
     child: Child<Num>,
 }
-
 
 impl<Num: Add<Output = Num>> Parent<Num> {
     pub fn new() -> Parent<Num> {
@@ -36,7 +32,6 @@ impl<Num: Add<Output = Num>> Parent<Num> {
         }
     }
 }
-
 
 fn main() {
     let mut parent = Parent::<usize>::new();

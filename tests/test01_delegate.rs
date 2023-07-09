@@ -6,6 +6,7 @@ trait Adder {
 }
 
 
+
 struct Child {
     num: usize,
 }

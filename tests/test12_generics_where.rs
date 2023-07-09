@@ -1,6 +1,6 @@
 use std::{marker::PhantomData, ops::Add};
 
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate_impl::{delegate, Delegate};
 
 #[delegate]
 trait Addr<X, Y: Add<Output = X>>
@@ -10,7 +10,6 @@ where
     fn add(&mut self, x: X, y: Y) -> X;
 }
 
-
 struct Child<X, Y: Add<Output = X>>
 where
     X: Add<Y, Output = X>,
@@ -18,7 +17,6 @@ where
     _maker: PhantomData<X>,
     _maker2: PhantomData<Y>,
 }
-
 
 impl<X, Y: Add<Output = X>> Addr<X, Y> for Child<X, Y>
 where
@@ -29,7 +27,6 @@ where
     }
 }
 
-
 #[derive(Delegate)]
 struct Parent<X, Y: Add<Output = X>>
 where
@@ -39,7 +36,6 @@ where
     child: Child<X, Y>,
 }
 
-
 fn main() {
     let mut parent = Parent {
         child: Child {
@@ -47,7 +43,6 @@ fn main() {
             _maker2: PhantomData,
         },
     };
-
 
     assert_eq!(parent.add(2, 3), 5);
 }

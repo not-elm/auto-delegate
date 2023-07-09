@@ -1,4 +1,4 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate_impl::{delegate, Delegate};
 
 use crate::common::increment::Increment;
 
@@ -13,14 +13,12 @@ struct CalcAdd {
     num: usize,
 }
 
-
 impl Calc for CalcAdd {
     fn calc(&mut self, x1: usize, x2: usize) -> &usize {
         self.num = x1 + x2;
         &self.num
     }
 }
-
 
 impl Increment for CalcAdd {
     fn increment(&mut self) -> usize {
@@ -29,11 +27,9 @@ impl Increment for CalcAdd {
     }
 }
 
-
 struct CalcSub {
     num: usize,
 }
-
 
 impl Calc for CalcSub {
     fn calc(&mut self, x1: usize, x2: usize) -> &usize {
@@ -42,7 +38,6 @@ impl Calc for CalcSub {
     }
 }
 
-
 impl Increment for CalcSub {
     fn increment(&mut self) -> usize {
         self.num -= 1;
@@ -50,14 +45,12 @@ impl Increment for CalcSub {
     }
 }
 
-
 #[derive(Delegate)]
 #[to(Calc, Increment)]
 enum EnumCalc {
     Add(CalcAdd),
     Sub(CalcSub),
 }
-
 
 fn main() {
     let mut c = EnumCalc::Add(CalcAdd { num: 0 });

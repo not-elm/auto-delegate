@@ -1,8 +1,7 @@
-use auto_delegate_macros::delegate;
+use auto_delegate_impl::delegate;
 
 pub mod child;
 pub mod parent;
-
 
 #[delegate]
 pub trait Addr {

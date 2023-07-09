@@ -1,15 +1,13 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate_impl::{delegate, Delegate};
 
 #[delegate]
 trait StringRef<'a> {
     fn str_ref(&'a self) -> &'a str;
 }
 
-
 struct Child<'a> {
     name: &'a str,
 }
-
 
 impl<'a> StringRef<'a> for Child<'a> {
     fn str_ref(&'a self) -> &'a str {
@@ -17,20 +15,17 @@ impl<'a> StringRef<'a> for Child<'a> {
     }
 }
 
-
 impl<'a> Child<'a> {
     pub fn new(name: &'a str) -> Self {
         Self { name }
     }
 }
 
-
 #[derive(Delegate)]
 struct Parent<'a> {
     #[to(StringRef)]
     child: Child<'a>,
 }
-
 
 impl<'a> Parent<'a> {
     pub fn new(name: &'a str) -> Self {

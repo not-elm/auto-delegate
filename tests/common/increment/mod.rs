@@ -1,11 +1,9 @@
-use auto_delegate_macros::delegate;
+use auto_delegate_impl::delegate;
 
-pub mod parent;
 pub mod child;
+pub mod parent;
 
 #[delegate]
 pub trait Increment {
     fn increment(&mut self) -> usize;
 }
-
-

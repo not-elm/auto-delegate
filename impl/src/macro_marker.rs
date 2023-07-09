@@ -27,11 +27,20 @@ pub fn expand_macro_marker_generics(trait_ident: Ident) -> TokenStream2 {
 
     const GENERICS_COUNT: usize = 30;
 
-    let params = (0..GENERICS_COUNT)
+    let generic_chars = (0..GENERICS_COUNT)
         .map(|_| {
             let c = chars.next().unwrap_or(' ');
-            quote::quote!(#c,)
-        });
+            quote::quote!(#c)
+        })
+        .collect::<Vec<TokenStream2>>();
+
+    let mut params = Vec::with_capacity(generic_chars.len() * 2);
+    for c in generic_chars {
+        params.push(c);
+        params.push(quote::quote!(,))
+    }
+
+    params.pop();
 
     quote::quote!(#(#params)*)
 }

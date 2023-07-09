@@ -1,28 +1,24 @@
-use auto_delegate_macros::{delegate, Delegate};
+use auto_delegate_impl::{delegate, Delegate};
 
 #[delegate]
 trait Calc {
     fn calc(&self, x1: usize, x2: usize) -> usize;
 }
 
-
 #[delegate]
 trait Label {
     fn label(&self) -> String;
 }
-
 
 #[delegate]
 trait Increment: Calc + Label {
     fn increment(&mut self) -> usize;
 }
 
-
 #[derive(Default)]
 struct Child {
     num: usize,
 }
-
 
 impl Increment for Child {
     fn increment(&mut self) -> usize {
@@ -31,13 +27,11 @@ impl Increment for Child {
     }
 }
 
-
 impl Calc for Child {
     fn calc(&self, x1: usize, x2: usize) -> usize {
         x1 + x2
     }
 }
-
 
 impl Label for Child {
     fn label(&self) -> String {
@@ -50,7 +44,6 @@ struct Parent {
     #[to(Calc, Increment, Label)]
     child: Child,
 }
-
 
 fn main() {
     let mut parent = Parent::default();

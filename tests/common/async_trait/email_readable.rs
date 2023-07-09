@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 
-use auto_delegate_macros::delegate;
+use auto_delegate_impl::delegate;
 
 pub struct EmailAddress(String);
 
@@ -11,13 +11,11 @@ impl EmailAddress {
     }
 }
 
-
 impl Default for EmailAddress {
     fn default() -> Self {
         Self(String::from("rust@gmail.com"))
     }
 }
-
 
 #[async_trait]
 #[delegate]
