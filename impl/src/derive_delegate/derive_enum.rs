@@ -38,7 +38,7 @@ fn expand_impl_macro_marker(
 
     quote::quote! {
         impl #generics #marker_ident for #enum_name #generics{
-            type DelegateType = dyn #trait_name #generics;
+            type DelegateType = dyn #trait_name;
 
             #delegate_by_ref
 
