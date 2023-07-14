@@ -78,7 +78,7 @@ impl TraitFnInputs {
         match ty {
             Reference(ty_ref) => self.reference_receiver(&ty_ref),
             Path(_) => quote::quote! {self},
-            ty => syn::Error::new(ty.span(), format!("This Receiver Type Not Supported = ({})", quote::quote!(#ty).to_string())).to_compile_error(),
+            ty => syn::Error::new(ty.span(), format!("This Receiver Type Not Supported = ({})", quote::quote!(#ty))).to_compile_error(),
         }
     }
 
