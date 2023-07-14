@@ -1,8 +1,10 @@
 use proc_macro::TokenStream;
 
 use proc_macro2::Span;
-use syn::{ItemTrait, LifetimeParam};
+use syn::{ItemTrait, LifetimeParam, TypeParamBound};
 use syn::__private::TokenStream2;
+use syn::punctuated::Punctuated;
+use syn::token::Plus;
 
 use crate::intersperse;
 use crate::macro_marker::{expand_macro_maker_name, expand_macro_marker_generics};
@@ -40,12 +42,12 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
         let impl_generic = proc_macro2::Ident::new("MacroMakerImpl", Span::call_site());
         let trait_functions = trait_functions(item.clone())?;
         let lifetime_bound = expand_lifetimes_bound(item);
-        let super_traits = &item.supertraits;
+        let super_traits = super_traits_bound(&item.supertraits);
         let where_generics = expand_where_bound_without_where_token(&item.generics);
 
         Ok(quote::quote! {
          impl<#lifetime #impl_generic> #trait_name for #impl_generic
-             where #impl_generic: #macro_marker_name<#macro_marker_generics> + #super_traits,
+             where #impl_generic: #macro_marker_name<#macro_marker_generics> #super_traits,
                    <#impl_generic as #macro_marker_name<#macro_marker_generics>>::DelegateType :  #lifetime_bound,
                    #where_generics
             {
@@ -55,6 +57,15 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
     };
 
     expand_impl()
+}
+
+
+fn super_traits_bound(super_traits: &Punctuated<TypeParamBound, Plus>) -> Option<TokenStream2> {
+    if super_traits.is_empty() {
+        None
+    } else {
+        Some(quote::quote!(+ #super_traits))
+    }
 }
 
 
