@@ -6,7 +6,7 @@ use syn::Fields::Unnamed;
 use crate::attribute::{find_to_attribute, syn_error_not_found_fields, syn_error_not_found_trait_names, trait_names};
 use crate::derive_delegate::by_fields::{ByField, ByFields};
 use crate::macro_marker::expand_macro_maker_ident;
-use crate::syn::syn_generics::{expand_generics_with_brackets_without_bound, expand_where_bound};
+use crate::syn::syn_generics::expand_where_bound;
 
 pub fn try_expand_derive_delegate_struct(item_struct: ItemStruct) -> syn::Result<proc_macro2::TokenStream> {
     let to_attr = find_to_attribute(&item_struct.attrs);
@@ -94,7 +94,7 @@ fn impl_macro_marker(
     generics: &Generics,
 )
     -> TokenStream2 {
-    let generics_param = expand_generics_with_brackets_without_bound(generics);
+    let (_, type_params, _) = &generics.split_for_impl();
     let where_bound = expand_where_bound(generics);
 
     let expand = trait_names
@@ -103,7 +103,7 @@ fn impl_macro_marker(
             let macro_marker_ident = expand_macro_maker_ident(trait_name.clone());
 
             quote::quote! {
-                impl #generics #macro_marker_ident for #struct_name #generics_param #where_bound{
+                impl #generics #macro_marker_ident for #struct_name #type_params #where_bound{
                     type DelegateType = #delegate_filed_ty;
 
                     fn delegate_by_ref<'delegate_lifetime, Output: 'delegate_lifetime>(&'delegate_lifetime self, f: impl FnOnce(&'delegate_lifetime Self::DelegateType) -> Output) -> Output{
