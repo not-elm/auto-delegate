@@ -6,7 +6,6 @@ trait Adder {
 }
 
 
-
 struct Child {
     num: usize,
 }
@@ -30,8 +29,7 @@ fn main() {
     let mut parent = Parent {
         child: Child { num: 0 },
     };
-
-
+    
     assert_eq!(parent.increment(), 1);
     assert_eq!(parent.increment(), 2);
     assert_eq!(parent.increment(), 3);

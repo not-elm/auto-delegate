@@ -1,5 +1,6 @@
 use crate::common::increment::Increment;
 
+#[derive(Default)]
 pub struct IncrementChild {
     num: usize,
 }
@@ -13,12 +14,6 @@ impl Increment for IncrementChild {
 }
 
 
-impl Default for IncrementChild {
-    fn default() -> Self {
-        Self {
-            num: 0
-        }
-    }
-}
+
 
 

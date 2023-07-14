@@ -47,7 +47,7 @@ fn main() {
     let v = 32;
 
     let parent = Parent::new(&p, &v);
-
+    
     assert_eq!(parent.p_ref(), "");
     assert_eq!(parent.v_ref(), &32);
 }
