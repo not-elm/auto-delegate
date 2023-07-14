@@ -105,7 +105,7 @@ fn expand_lifetimes_bound(item_trait: &ItemTrait) -> TokenStream2 {
 
     if lifetime_params.is_empty() {
         quote::quote! {
-            #trait_name +  'static
+            #trait_name
         }
     } else {
         let lifetimes_bound: Vec<TokenStream2> = intersperse(
