@@ -27,5 +27,6 @@ enum Parent<T> where T: Debug {
 
 fn main() {
     let parent = Parent::Add(CalcAdd::<usize>(0));
+
     assert_eq!(parent.calc(3, 2), 5);
 }

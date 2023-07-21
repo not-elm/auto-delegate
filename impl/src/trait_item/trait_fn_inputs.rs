@@ -96,13 +96,17 @@ impl TraitFnInputs {
         let inputs = self.expand_inputs();
 
         if ty_ref.mutability.is_none() {
-            quote::quote! {self.delegate_by_ref(|f|{
-                f.#fn_name(#inputs)
-            })}
+            quote::quote! {
+                self
+                    .delegate_by_ref()
+                    .#fn_name(#inputs)
+            }
         } else {
-            quote::quote! {self.delegate_by_mut(|f|{
-                 f.#fn_name(#inputs)
-            })}
+            quote::quote! {
+                self
+                    .delegate_by_mut()
+                    .#fn_name(#inputs)
+            }
         }
     }
 

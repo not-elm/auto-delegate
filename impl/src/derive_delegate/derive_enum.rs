@@ -59,7 +59,7 @@ fn type_params(generics: &Generics) -> Option<Vec<TokenStream2>> {
         for t in types {
             let ident = &t.ident;
             let bounds = &t.bounds;
-            params.push(quote::quote!(#ident: 'static ));
+            params.push(quote::quote!(#ident: 'static));
             if !bounds.is_empty() {
                 params.push(quote::quote!(+ #bounds))
             }
@@ -75,10 +75,9 @@ fn expand_impl_delegate_by_ref(item_enum: &ItemEnum) -> TokenStream2 {
     let patterns = pattern_match_fields(item_enum);
 
     quote::quote! {
-        fn delegate_by_ref<'a, Output: 'a>(
-            &'a self,
-            f: impl FnOnce(&'a Self::DelegateType) -> Output) -> Output{
-
+        #[doc(hidden)]
+        #[inline]
+        fn delegate_by_ref(&self) -> &Self::DelegateType{
             match self{
                  #patterns
             }
@@ -91,11 +90,11 @@ fn expand_impl_delegate_by_mut(item_enum: &ItemEnum) -> TokenStream2 {
     let patterns = pattern_match_fields(item_enum);
 
     quote::quote! {
-        fn delegate_by_mut<'a, Output: 'a>(
-            &'a mut self,
-            f: impl FnOnce(&'a mut Self::DelegateType) -> Output) -> Output{
+        #[doc(hidden)]
+        #[inline]
+        fn delegate_by_mut(&mut self) -> &mut Self::DelegateType{
             match self{
-                #patterns
+                 #patterns
             }
         }
     }
@@ -110,7 +109,7 @@ fn pattern_match_fields(item_enum: &ItemEnum) -> TokenStream2 {
             let ident = &v.ident;
 
             quote::quote! {
-                Self::#ident(v) => f(v),
+                Self::#ident(v) => v,
             }
         });
 

@@ -8,15 +8,16 @@ macro_rules! expand_macro_maker {
         pub trait MacroMarker<$(const $g: char = ' ',)*> {
             type DelegateType: ?core::marker::Sized;
 
-            fn delegate_by_ref<'a, Output: 'a>(
-                &'a self,
-                f: impl core::ops::FnOnce(&'a Self::DelegateType) -> Output,
-            ) -> Output;
+            #[doc(hidden)]
+            fn delegate_by_ref(
+                &self
+            ) -> &Self::DelegateType;
 
-            fn delegate_by_mut<'a, Output: 'a>(
-                &'a mut self,
-                f: impl core::ops::FnOnce(&'a mut Self::DelegateType) -> Output,
-            ) -> Output;
+
+            #[doc(hidden)]
+            fn delegate_by_mut(
+                &mut self
+            ) -> &mut Self::DelegateType;
         }
     };
 }

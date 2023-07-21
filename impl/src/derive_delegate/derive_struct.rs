@@ -106,12 +106,17 @@ fn impl_macro_marker(
                 impl #generics #macro_marker_ident for #struct_name #type_params #where_bound{
                     type DelegateType = #delegate_filed_ty;
 
-                    fn delegate_by_ref<'delegate_lifetime, Output: 'delegate_lifetime>(&'delegate_lifetime self, f: impl FnOnce(&'delegate_lifetime Self::DelegateType) -> Output) -> Output{
-                        f(&self.#delegate_field_name)
+                    #[doc(hidden)]
+                    #[inline]
+                    fn delegate_by_ref(&self) -> &Self::DelegateType{
+                         &self.#delegate_field_name
                     }
 
-                    fn delegate_by_mut<'delegate_lifetime, Output:'delegate_lifetime>(&'delegate_lifetime mut self, f: impl FnOnce(&'delegate_lifetime mut Self::DelegateType) -> Output) -> Output{
-                        f(&mut self.#delegate_field_name)
+
+                    #[doc(hidden)]
+                    #[inline]
+                    fn delegate_by_mut(&mut self) -> &mut Self::DelegateType{
+                         &mut self.#delegate_field_name
                     }
                 }
             }

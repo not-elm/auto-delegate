@@ -36,6 +36,7 @@ impl Calc for Parent {
 
 fn main() {
     let parent = Parent::default();
+
     assert_eq!(parent.calc(3, 2), 5);
     assert_eq!(parent.label(), "add".to_string());
 }
