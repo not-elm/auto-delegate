@@ -1,6 +1,6 @@
 use std::{marker::PhantomData, ops::Add};
 
-use auto_delegate_impl::{delegate, Delegate};
+use auto_delegate::{delegate, Delegate};
 
 #[delegate]
 trait Addr<Num: Add<Output = Num>> {

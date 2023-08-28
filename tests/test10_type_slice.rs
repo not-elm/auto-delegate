@@ -1,4 +1,4 @@
-use auto_delegate_impl::{delegate, Delegate};
+use auto_delegate::{delegate, Delegate};
 
 #[delegate]
 trait Buffer {

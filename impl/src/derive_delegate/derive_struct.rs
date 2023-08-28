@@ -104,25 +104,33 @@ fn impl_macro_marker(
 
             quote::quote! {
                 impl #generics #macro_marker_ident for #struct_name #type_params #where_bound{
-                    type DelegateType = #delegate_filed_ty;
+                    type A = #delegate_filed_ty;
                     type B = #delegate_filed_ty;
                     type C = #delegate_filed_ty;
                     type D = #delegate_filed_ty;
+                    type E = #delegate_filed_ty;
+                    type F = #delegate_filed_ty;
+                    type G = #delegate_filed_ty;
+                    type H = #delegate_filed_ty;
+                    type I = #delegate_filed_ty;
+                    type J = #delegate_filed_ty;
+                    type K = #delegate_filed_ty;
+                    type L = #delegate_filed_ty;
+
 
                     #[inline]
-                    fn delegate_by_owned(self) -> auto_delegate::Marker<Self::DelegateType, Self::B, Self::C, Self::D>{
-                         auto_delegate::Marker(Some(self.#delegate_field_name), None, None, None)
+                    fn delegate_by_owned(self) -> auto_delegate::Marker<Self::A, Self::B, Self::C, Self::D, Self::E, Self::F, Self::G, Self::H, Self::I, Self::J, Self::K, Self::L>{
+                        auto_delegate::Marker(Some(self.#delegate_field_name), None, None, None, None, None, None, None, None, None, None, None)
                     }
 
-
                     #[inline]
-                    fn delegate_by_ref(&self) -> &Self::DelegateType{
-                         &self.#delegate_field_name
+                    fn delegate_by_ref(&self) -> auto_delegate::Marker<&Self::A, &Self::B, &Self::C, &Self::D, &Self::E, &Self::F, &Self::G, &Self::H, &Self::I, &Self::J, &Self::K, &Self::L>{
+                        auto_delegate::Marker(Some(&self.#delegate_field_name), None, None, None, None, None, None, None, None, None, None, None)
                     }
 
                     #[inline]
-                    fn delegate_by_mut(&mut self) -> &mut Self::DelegateType{
-                         &mut self.#delegate_field_name
+                    fn delegate_by_mut(&mut self) -> auto_delegate::Marker<&mut Self::A, &mut Self::B, &mut Self::C, &mut Self::D, &mut Self::E, &mut Self::F, &mut Self::G, &mut Self::H, &mut Self::I, &mut Self::J, &mut Self::K, &mut Self::L>{
+                        auto_delegate::Marker(Some(&mut self.#delegate_field_name), None, None, None, None, None, None, None, None, None, None, None)
                     }
                 }
             }

@@ -48,10 +48,19 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
         Ok(quote::quote! {
          impl<#lifetime #impl_generic> #trait_name for #impl_generic
              where #impl_generic: #macro_marker_name<#macro_marker_generics> #super_traits,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::DelegateType :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::A :  #lifetime_bound,
                 <#impl_generic as #macro_marker_name<#macro_marker_generics>>::B :  #lifetime_bound,
                 <#impl_generic as #macro_marker_name<#macro_marker_generics>>::C :  #lifetime_bound,
                 <#impl_generic as #macro_marker_name<#macro_marker_generics>>::D :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::D :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::E :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::F :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::G :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::H :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::I :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::J :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::K :  #lifetime_bound,
+                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::L :  #lifetime_bound,
                 #where_generics
             {
                 #(#trait_functions)*

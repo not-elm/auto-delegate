@@ -1,4 +1,4 @@
-use auto_delegate_impl::{delegate, Delegate};
+use auto_delegate::{delegate, Delegate};
 
 /// 複数のメソッド、返り値がないメソッドを持つトレイトを委譲できるようにします。
 #[delegate]

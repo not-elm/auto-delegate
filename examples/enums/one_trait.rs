@@ -36,7 +36,6 @@ fn main() {
     let c = EnumCalc::Add(CalcAdd::default());
     assert_eq!(c.calc(3, 5), 8);
 
-
     let c = EnumCalc::Sub(CalcSub::default());
     assert_eq!(c.calc(3, 2), 1);
 }

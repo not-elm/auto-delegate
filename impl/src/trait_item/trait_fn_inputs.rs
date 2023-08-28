@@ -73,45 +73,71 @@ impl TraitFnInputs {
 
 
     fn receiver(&self, fn_name: &Ident) -> TokenStream2 {
-        let inputs = self.expand_inputs();
-
+        let call = self.call(fn_name);
         quote::quote! {
             let m = self.delegate_by_owned();
-            if let Some(t) = m.0{
-                return t.#fn_name(#inputs);
-            }
-             if let Some(t) = m.0{
-                return t.#fn_name(#inputs);
-            }
-             if let Some(t) = m.1{
-                return t.#fn_name(#inputs);
-            }
-             if let Some(t) = m.2{
-                return t.#fn_name(#inputs);
-            }
-             if let Some(t) = m.3{
-                return t.#fn_name(#inputs);
-            }
-            panic!("");
+            #call
         }
     }
 
 
     fn reference_delegate(&self, ty_ref: &TypeReference, fn_name: &Ident) -> TokenStream2 {
-        let inputs = self.expand_inputs();
+        let call = self.call(fn_name);
 
         if ty_ref.mutability.is_none() {
             quote::quote! {
-                self
-                    .delegate_by_ref()
-                    .#fn_name(#inputs)
+                let m = self.delegate_by_ref();
+                #call
             }
         } else {
             quote::quote! {
-                self
-                    .delegate_by_mut()
-                    .#fn_name(#inputs)
+                let m = self.delegate_by_mut();
+                #call
             }
+        }
+    }
+
+    fn call(&self, fn_name: &Ident) -> TokenStream2 {
+        let inputs = self.expand_inputs();
+
+        quote! {
+            if let Some(t) = m.0{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.1{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.2{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.3{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.4{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.5{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.6{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.7{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.8{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.9{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.10{
+                return t.#fn_name(#inputs);
+            }
+            if let Some(t) = m.11{
+                return t.#fn_name(#inputs);
+            }
+            panic!("unreachable");
         }
     }
 

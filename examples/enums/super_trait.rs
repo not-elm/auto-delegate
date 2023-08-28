@@ -59,8 +59,7 @@ fn main() {
     let add = Calculator::Add(CalcAdd);
     assert_eq!(add.calc(3, 2), 5);
     assert_eq!(add.label(), "add".to_string());
-
-
+    
     let sub = Calculator::Sub(CalcSub);
     assert_eq!(sub.calc(3, 2), 1);
     assert_eq!(sub.label(), "sub".to_string());
