@@ -1,7 +1,5 @@
 #![no_std]
 
-extern crate alloc;
-
 
 pub use auto_delegate_impl::{delegate, Delegate};
 
