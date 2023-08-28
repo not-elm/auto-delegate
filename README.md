@@ -1,4 +1,4 @@
-# Auto Delegate
+# auto-delegate
 
 ## Supports `no_std`
 
@@ -191,3 +191,7 @@ fn main() {
 }
 ```
 
+## Todo
+
+- [x] support self-receiver(v0.0.8)
+- [ ] support method without receiver
