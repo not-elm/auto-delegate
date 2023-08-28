@@ -5,6 +5,7 @@ extern crate alloc;
 
 pub use auto_delegate_impl::{delegate, Delegate};
 
+#[doc(hidden)]
 pub struct Marker<A, B, C, D, E, F, G, H, I, J, K, L>(
     pub Option<A>,
     pub Option<B>,
