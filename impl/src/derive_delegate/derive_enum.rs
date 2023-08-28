@@ -41,6 +41,9 @@ fn expand_impl_macro_marker(
             #bounds
         {
             type DelegateType = dyn #trait_name;
+            type B = dyn #trait_name;
+            type C = dyn #trait_name;
+            type D = dyn #trait_name;
 
             #delegate_by_ref
 
@@ -71,11 +74,24 @@ fn type_params(generics: &Generics) -> Option<Vec<TokenStream2>> {
 }
 
 
+fn expand_impl_delegate_by_owned(item_enum: &ItemEnum) -> TokenStream2 {
+    let patterns = pattern_match_fields(item_enum);
+
+    quote::quote! {
+        #[inline]
+        fn delegate_by_owned(&self) -> &Self::DelegateType{
+            match self{
+                 #patterns
+            }
+        }
+    }
+}
+
+
 fn expand_impl_delegate_by_ref(item_enum: &ItemEnum) -> TokenStream2 {
     let patterns = pattern_match_fields(item_enum);
 
     quote::quote! {
-        #[doc(hidden)]
         #[inline]
         fn delegate_by_ref(&self) -> &Self::DelegateType{
             match self{
@@ -90,7 +106,6 @@ fn expand_impl_delegate_by_mut(item_enum: &ItemEnum) -> TokenStream2 {
     let patterns = pattern_match_fields(item_enum);
 
     quote::quote! {
-        #[doc(hidden)]
         #[inline]
         fn delegate_by_mut(&mut self) -> &mut Self::DelegateType{
             match self{

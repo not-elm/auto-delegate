@@ -1,12 +1,11 @@
 use proc_macro2::Ident;
-use syn::{FnArg, Pat, PatType, Receiver, TypeReference};
+use quote::quote;
+use syn::{FnArg, Pat, Receiver, Type, TypeReference};
 use syn::__private::TokenStream2;
 use syn::punctuated::Punctuated;
 use syn::spanned::Spanned;
 use syn::token::Comma;
-use syn::Type::{Path, Reference};
-
-use crate::syn::syn_type::expand_syn_type;
+use syn::Type::Reference;
 
 pub struct TraitFnInputs {
     inputs: Punctuated<FnArg, Comma>,
@@ -66,28 +65,34 @@ impl TraitFnInputs {
     fn expand_delegate_receiver(&self, receiver: &Receiver, fn_name: &Ident) -> Option<TokenStream2> {
         let ty = *receiver.ty.clone();
         match ty {
+            Type::Path(_) => Some(self.receiver(fn_name)),
             Reference(ty_ref) => Some(self.reference_delegate(&ty_ref, fn_name)),
             _ => None,
         }
     }
 
 
-    fn expand_receiver(&self, receiver: &Receiver) -> TokenStream2 {
-        let ty = *receiver.ty.clone();
+    fn receiver(&self, fn_name: &Ident) -> TokenStream2 {
+        let inputs = self.expand_inputs();
 
-        match ty {
-            Reference(ty_ref) => self.reference_receiver(&ty_ref),
-            Path(_) => quote::quote! {self},
-            ty => syn::Error::new(ty.span(), format!("This Receiver Type Not Supported = ({})", quote::quote!(#ty))).to_compile_error(),
-        }
-    }
-
-    fn reference_receiver(&self, ty_ref: &TypeReference) -> TokenStream2 {
-        let life_time = &ty_ref.lifetime;
-        if ty_ref.mutability.is_none() {
-            quote::quote! {&#life_time self}
-        } else {
-            quote::quote! {&#life_time mut self}
+        quote::quote! {
+            let m = self.delegate_by_owned();
+            if let Some(t) = m.0{
+                return t.#fn_name(#inputs);
+            }
+             if let Some(t) = m.0{
+                return t.#fn_name(#inputs);
+            }
+             if let Some(t) = m.1{
+                return t.#fn_name(#inputs);
+            }
+             if let Some(t) = m.2{
+                return t.#fn_name(#inputs);
+            }
+             if let Some(t) = m.3{
+                return t.#fn_name(#inputs);
+            }
+            panic!("");
         }
     }
 
@@ -112,24 +117,8 @@ impl TraitFnInputs {
 
 
     fn expand_fn_arg(&self, args: &FnArg) -> syn::Result<TokenStream2> {
-        match args {
-            FnArg::Receiver(receiver) => Ok(self.expand_receiver(receiver)),
-
-            FnArg::Typed(pat_type) => expand_pat_type(pat_type),
-        }
+        Ok(quote!(#args))
     }
-}
-
-
-fn expand_pat_type(pat_type: &PatType) -> syn::Result<TokenStream2> {
-    let args_name = require_ident(&pat_type.pat)?;
-
-
-    let args_ty = expand_syn_type(&pat_type.ty);
-
-    Ok(quote::quote! {
-        #args_name : #args_ty
-    })
 }
 
 

@@ -105,15 +105,21 @@ fn impl_macro_marker(
             quote::quote! {
                 impl #generics #macro_marker_ident for #struct_name #type_params #where_bound{
                     type DelegateType = #delegate_filed_ty;
+                    type B = #delegate_filed_ty;
+                    type C = #delegate_filed_ty;
+                    type D = #delegate_filed_ty;
 
-                    #[doc(hidden)]
+                    #[inline]
+                    fn delegate_by_owned(self) -> auto_delegate::Marker<Self::DelegateType, Self::B, Self::C, Self::D>{
+                         auto_delegate::Marker(Some(self.#delegate_field_name), None, None, None)
+                    }
+
+
                     #[inline]
                     fn delegate_by_ref(&self) -> &Self::DelegateType{
                          &self.#delegate_field_name
                     }
 
-
-                    #[doc(hidden)]
                     #[inline]
                     fn delegate_by_mut(&mut self) -> &mut Self::DelegateType{
                          &mut self.#delegate_field_name

@@ -19,9 +19,7 @@ impl TraitFnMeta {
         let fn_name = self.fn_name();
         let output = self.output();
         let fn_inputs = TraitFnInputs::new(self.0.sig.inputs.clone());
-
         let args = fn_inputs.expand_args()?;
-
         let delegate = fn_inputs.expand_delegate_method(fn_name);
         let generics_brackets = expand_generics_with_brackets(&self.0.sig.generics);
         let where_clause = &self.0
