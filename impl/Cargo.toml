@@ -15,11 +15,10 @@ description = "Auto delegate allows you that automatic impl of traits and delega
 proc-macro = true
 
 
-
 [dependencies]
 quote = "1.0.23"
 proc-macro2 = "1.0.51"
-syn = { version = "2.0.15", features = ["full", "extra-traits", "derive"] }
+syn = { version = "2.0.15", features = ["full", "extra-traits", "derive", "parsing"] }
 
 
 [dev-dependencies]

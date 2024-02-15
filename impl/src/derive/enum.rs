@@ -1,10 +1,10 @@
 use proc_macro2::Ident;
 use quote::quote;
-use syn::{Generics, ItemEnum};
 use syn::__private::TokenStream2;
+use syn::ItemEnum;
 
 use crate::attribute::{find_to_attribute, syn_error_not_found_to_attribute, syn_error_not_found_trait_names, trait_names};
-use crate::macro_marker::expand_macro_maker_ident;
+use crate::delegatable::delegatable_ident_with_generics;
 
 pub fn try_expand_derive_enum(item_enum: &ItemEnum) -> syn::Result<TokenStream2> {
     let delegate_by_owned = expand_impl_delegate_by_owned(item_enum);
@@ -31,17 +31,16 @@ fn expand_impl_macro_marker(
     delegate_by_ref: &TokenStream2,
     delegate_by_mut: &TokenStream2,
 ) -> TokenStream2 {
-    let marker_ident = expand_macro_maker_ident(trait_name.clone());
+    let marker_ident = delegatable_ident_with_generics(trait_name.clone());
     let enum_name = &item_enum.ident;
     let generics = &item_enum.generics;
     let (_, types, _) = generics.split_for_impl();
-    let type_params = type_params(generics);
-    let impl_generics = type_params.as_ref().map(|type_params| quote::quote!(<#(#type_params)*>));
+
     let bounds = &generics.where_clause;
     let (a, b, c, d, e, f, g, h, i, j, k, l) = variant_types(item_enum);
 
     quote::quote! {
-        impl #impl_generics #marker_ident for #enum_name #types
+        impl #generics #marker_ident for #enum_name #types
             #bounds
         {
             type A = #a;
@@ -65,32 +64,11 @@ fn expand_impl_macro_marker(
 }
 
 
-fn type_params(generics: &Generics) -> Option<Vec<TokenStream2>> {
-    if generics.params.is_empty() {
-        None
-    } else {
-        let types = generics.type_params();
-        let mut params = Vec::new();
-        for t in types {
-            let ident = &t.ident;
-            let bounds = &t.bounds;
-            params.push(quote::quote!(#ident: 'static));
-            if !bounds.is_empty() {
-                params.push(quote::quote!(+ #bounds))
-            }
-            params.push(quote::quote!(,));
-        }
-        params.pop();
-        Some(params)
-    }
-}
-
-
 fn expand_impl_delegate_by_owned(item_enum: &ItemEnum) -> TokenStream2 {
     let patterns = pattern_match_fields(item_enum);
 
     quote::quote! {
-        #[inline]
+        #[inline(always)]
         fn delegate_by_owned(self) -> auto_delegate::Marker<Self::A, Self::B, Self::C, Self::D, Self::E, Self::F, Self::G, Self::H, Self::I, Self::J, Self::K, Self::L>{
             match self{
                  #patterns
@@ -104,7 +82,7 @@ fn expand_impl_delegate_by_ref(item_enum: &ItemEnum) -> TokenStream2 {
     let patterns = pattern_match_fields(item_enum);
 
     quote::quote! {
-        #[inline]
+        #[inline(always)]
         fn delegate_by_ref(&self) -> auto_delegate::Marker<&Self::A, &Self::B, &Self::C, &Self::D, &Self::E, &Self::F, &Self::G, &Self::H, &Self::I, &Self::J, &Self::K, &Self::L>{
             match self{
                  #patterns
@@ -118,7 +96,7 @@ fn expand_impl_delegate_by_mut(item_enum: &ItemEnum) -> TokenStream2 {
     let patterns = pattern_match_fields(item_enum);
 
     quote::quote! {
-        #[inline]
+        #[inline(always)]
         fn delegate_by_mut(&mut self) -> auto_delegate::Marker<&mut Self::A, &mut Self::B, &mut Self::C, &mut Self::D, &mut Self::E, &mut Self::F, &mut Self::G, &mut Self::H, &mut Self::I, &mut Self::J, &mut Self::K, &mut Self::L>{
             match self{
                  #patterns
@@ -166,7 +144,7 @@ fn pattern_match_fields(item_enum: &ItemEnum) -> TokenStream2 {
                     Self::#ident(v) => auto_delegate::Marker(None, None, None, Some(v), None, None, None, None, None, None, None, None),
                 },
                 4 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, Some(v), None, None, None, None, None, None),
+                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, Some(v), None, None, None, None, None, None, None),
                 },
                 5 => quote::quote! {
                     Self::#ident(v) => auto_delegate::Marker(None, None, None, None, None, Some(v), None, None, None, None, None, None),

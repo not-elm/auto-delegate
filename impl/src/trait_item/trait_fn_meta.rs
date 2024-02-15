@@ -1,9 +1,8 @@
 use proc_macro2::Ident;
-use syn::{ReturnType, TraitItemFn};
+use quote::quote;
 use syn::__private::TokenStream2;
+use syn::TraitItemFn;
 
-use crate::syn::syn_generics::expand_generics_with_brackets;
-use crate::syn::syn_type::expand_syn_type;
 use crate::trait_item::trait_fn_inputs::TraitFnInputs;
 
 pub struct TraitFnMeta(TraitItemFn);
@@ -15,38 +14,24 @@ impl TraitFnMeta {
     }
 
 
-    pub fn expand_fn(&self) -> syn::Result<TokenStream2> {
-        let fn_name = self.fn_name();
-        let output = self.output();
+    pub fn expand_fn(&mut self) -> syn::Result<TokenStream2> {
         let fn_inputs = TraitFnInputs::new(self.0.sig.inputs.clone());
-        let args = fn_inputs.expand_args()?;
-        let delegate = fn_inputs.expand_delegate_method(fn_name);
-        let generics_brackets = expand_generics_with_brackets(&self.0.sig.generics);
-        let where_clause = &self.0
-            .sig
-            .generics
-            .where_clause;
+        let delegate = fn_inputs.expand_delegate_method(self.fn_name());
 
-        Ok(quote::quote! {
-            fn #fn_name #generics_brackets(#args) #output #where_clause{
-                #delegate
-            }
+        self.0.default.replace(syn::parse2(quote!({
+            #delegate
+        })).unwrap());
+
+        let f = &self.0;
+        Ok(quote::quote!{
+            #[inline(always)]
+            #f
         })
     }
 
 
     fn fn_name(&self) -> &Ident {
         &self.0.sig.ident
-    }
-
-
-    fn output(&self) -> Option<TokenStream2> {
-        if let ReturnType::Type(_, type_path) = &self.0.sig.output {
-            let ty = expand_syn_type(type_path);
-            Some(quote::quote! {-> #ty})
-        } else {
-            None
-        }
     }
 }
 

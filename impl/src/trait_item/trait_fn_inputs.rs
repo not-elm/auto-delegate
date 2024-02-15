@@ -45,22 +45,6 @@ impl TraitFnInputs {
         }
     }
 
-    pub fn expand_args(&self) -> syn::Result<TokenStream2> {
-        let mut expand: Vec<TokenStream2> = Vec::new();
-        for args_type in self.inputs.iter() {
-            let token = self.expand_fn_arg(args_type)?;
-            expand.push(token);
-        }
-
-        let expand = expand
-            .into_iter()
-            .map(|f| quote::quote!(#f,));
-
-        Ok(quote::quote! {
-            #(#expand)*
-        })
-    }
-
 
     fn expand_delegate_receiver(&self, receiver: &Receiver, fn_name: &Ident) -> Option<TokenStream2> {
         let ty = *receiver.ty.clone();
@@ -142,11 +126,7 @@ impl TraitFnInputs {
     }
 
 
-    fn expand_fn_arg(&self, args: &FnArg) -> syn::Result<TokenStream2> {
-        Ok(quote!(#args))
-    }
 }
-
 
 fn require_ident(pat: &Pat) -> syn::Result<&Ident> {
     if let Pat::Ident(ident) = pat {

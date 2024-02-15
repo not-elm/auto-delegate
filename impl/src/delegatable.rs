@@ -3,16 +3,16 @@ use syn::__private::TokenStream2;
 
 use crate::ident::ident_to_lower_string;
 
-pub fn expand_macro_maker_ident(trait_ident: Ident) -> TokenStream2 {
-    let name = expand_macro_maker_name();
-    let generics = expand_macro_marker_generics(trait_ident);
+pub fn delegatable_ident_with_generics(trait_ident: Ident) -> TokenStream2 {
+    let name = delegatable_name();
+    let generics = delegatable_generics(trait_ident);
 
     quote::quote!(#name<#generics>)
 }
 
 
-pub fn expand_macro_maker_name() -> TokenStream2 {
-    let trait_name = proc_macro2::Ident::new("MacroMarker", proc_macro2::Span::call_site());
+fn delegatable_name() -> TokenStream2 {
+    let trait_name = proc_macro2::Ident::new("Delegatable", proc_macro2::Span::call_site());
 
     quote::quote! {
         auto_delegate::#trait_name
@@ -20,7 +20,7 @@ pub fn expand_macro_maker_name() -> TokenStream2 {
 }
 
 
-pub fn expand_macro_marker_generics(trait_ident: Ident) -> TokenStream2 {
+fn delegatable_generics(trait_ident: Ident) -> TokenStream2 {
     let str = ident_to_lower_string(trait_ident);
 
     let mut chars = str.chars();

@@ -22,7 +22,7 @@ pub struct Marker<A, B, C, D, E, F, G, H, I, J, K, L>(
 macro_rules! expand_macro_maker {
     ($($g: tt), *) => {
         #[doc(hidden)]
-        pub trait MacroMarker<$(const $g: char = ' ',)*> {
+        pub trait Delegatable<$(const $g: char = ' ',)*> {
             type A;
             type B;
             type C;

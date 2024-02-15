@@ -3,12 +3,12 @@ use proc_macro::TokenStream;
 use proc_macro2::Span;
 use syn::{ItemEnum, ItemStruct};
 
-use crate::derive_delegate::derive_enum::try_expand_derive_enum;
-use crate::derive_delegate::derive_struct::try_expand_derive_delegate_struct;
+use crate::derive::r#enum::try_expand_derive_enum;
+use crate::derive::r#struct::try_expand_derive_delegate_struct;
 
 mod by_fields;
-mod derive_struct;
-mod derive_enum;
+mod r#struct;
+mod r#enum;
 
 pub fn expand_derive_delegate(input: TokenStream) -> proc_macro2::TokenStream {
     if let Ok(item_struct) = syn::parse::<ItemStruct>(input.clone()) {

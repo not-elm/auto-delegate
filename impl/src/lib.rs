@@ -3,13 +3,12 @@ use proc_macro::TokenStream;
 use ::syn::__private::TokenStream2;
 
 use crate::delegate_trait::expand_delegate_trait;
-use crate::derive_delegate::expand_derive_delegate;
+use crate::derive::expand_derive_delegate;
 
-mod derive_delegate;
+mod derive;
 mod delegate_trait;
 mod ident;
-mod macro_marker;
-mod span;
+mod delegatable;
 mod syn;
 mod trait_item;
 mod attribute;

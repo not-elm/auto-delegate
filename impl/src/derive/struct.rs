@@ -4,9 +4,8 @@ use syn::__private::TokenStream2;
 use syn::Fields::Unnamed;
 
 use crate::attribute::{find_to_attribute, syn_error_not_found_fields, syn_error_not_found_trait_names, trait_names};
-use crate::derive_delegate::by_fields::{ByField, ByFields};
-use crate::macro_marker::expand_macro_maker_ident;
-use crate::syn::syn_generics::expand_where_bound;
+use crate::derive::by_fields::{ByField, ByFields};
+use crate::delegatable::delegatable_ident_with_generics;
 
 pub fn try_expand_derive_delegate_struct(item_struct: ItemStruct) -> syn::Result<proc_macro2::TokenStream> {
     let to_attr = find_to_attribute(&item_struct.attrs);
@@ -64,7 +63,6 @@ fn impl_macro_markers_with_named_fields(item_struct: ItemStruct) -> syn::Result<
     let expand_impl_methods = ByFields::new(item_struct.fields)
         .map(|by_field| impl_macro_marker_with_named_field(struct_name, by_field, &item_struct.generics));
 
-
     Ok(quote::quote! {
             #(#expand_impl_methods)*
         })
@@ -95,12 +93,12 @@ fn impl_macro_marker(
 )
     -> TokenStream2 {
     let (_, type_params, _) = &generics.split_for_impl();
-    let where_bound = expand_where_bound(generics);
+    let where_bound = generics.where_clause.as_ref();
 
     let expand = trait_names
         .iter()
         .map(|trait_name| {
-            let macro_marker_ident = expand_macro_maker_ident(trait_name.clone());
+            let macro_marker_ident = delegatable_ident_with_generics(trait_name.clone());
 
             quote::quote! {
                 impl #generics #macro_marker_ident for #struct_name #type_params #where_bound{
@@ -117,18 +115,17 @@ fn impl_macro_marker(
                     type K = #delegate_filed_ty;
                     type L = #delegate_filed_ty;
 
-
-                    #[inline]
+                    #[inline(always)]
                     fn delegate_by_owned(self) -> auto_delegate::Marker<Self::A, Self::B, Self::C, Self::D, Self::E, Self::F, Self::G, Self::H, Self::I, Self::J, Self::K, Self::L>{
                         auto_delegate::Marker(Some(self.#delegate_field_name), None, None, None, None, None, None, None, None, None, None, None)
                     }
 
-                    #[inline]
+                    #[inline(always)]
                     fn delegate_by_ref(&self) -> auto_delegate::Marker<&Self::A, &Self::B, &Self::C, &Self::D, &Self::E, &Self::F, &Self::G, &Self::H, &Self::I, &Self::J, &Self::K, &Self::L>{
                         auto_delegate::Marker(Some(&self.#delegate_field_name), None, None, None, None, None, None, None, None, None, None, None)
                     }
 
-                    #[inline]
+                    #[inline(always)]
                     fn delegate_by_mut(&mut self) -> auto_delegate::Marker<&mut Self::A, &mut Self::B, &mut Self::C, &mut Self::D, &mut Self::E, &mut Self::F, &mut Self::G, &mut Self::H, &mut Self::I, &mut Self::J, &mut Self::K, &mut Self::L>{
                         auto_delegate::Marker(Some(&mut self.#delegate_field_name), None, None, None, None, None, None, None, None, None, None, None)
                     }

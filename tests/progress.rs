@@ -27,4 +27,6 @@ fn tests() {
     t.pass("tests/test23_super_trait_hand_written.rs");
     t.pass("tests/test24_enum_generics.rs");
     t.pass("tests/test25_self_receiver.rs");
+    t.pass("tests/test26_enum_variants.rs");
+    t.pass("tests/test27_trait_generics_bound.rs");
 }

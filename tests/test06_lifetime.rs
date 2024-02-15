@@ -39,6 +39,5 @@ fn main() {
     let name = "Rust";
 
     let parent = Parent::new(name);
-
     assert_eq!(parent.str_ref(), name);
 }

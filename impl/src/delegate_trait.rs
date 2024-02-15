@@ -1,15 +1,15 @@
 use proc_macro::TokenStream;
 
 use proc_macro2::Span;
-use syn::{ItemTrait, LifetimeParam, TypeParamBound};
+use syn::{GenericParam, ItemTrait, LifetimeParam, TypeParam, TypeParamBound};
 use syn::__private::TokenStream2;
 use syn::punctuated::Punctuated;
 use syn::token::Plus;
 
+use crate::delegatable::delegatable_ident_with_generics;
 use crate::intersperse;
-use crate::macro_marker::{expand_macro_maker_name, expand_macro_marker_generics};
 use crate::syn::syn_generics::{
-    expand_generic_param_without_bound, expand_generics_separate_colon,
+    expand_generic_param_without_bound,
     expand_where_bound_without_where_token,
 };
 use crate::trait_item::trait_fn_iter::TraitFnIter;
@@ -30,37 +30,36 @@ fn try_expand_delegate_trait(input: TokenStream) -> syn::Result<TokenStream2> {
 
 
 fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
-    let generics = expand_generics_separate_colon(&item.generics);
-    let lifetime = generics
-        .map(|life_times| quote::quote!(#life_times,));
-
     let trait_name = expand_trait_name(item);
-    let macro_marker_name = expand_macro_maker_name();
-    let macro_marker_generics = expand_macro_marker_generics(item.ident.clone());
+    let delegatable = delegatable_ident_with_generics(item.ident.clone());
 
     let expand_impl = || {
-        let impl_generic = proc_macro2::Ident::new("MacroMakerImpl", Span::call_site());
+        let impl_generic = proc_macro2::Ident::new("DelegateImpl", Span::call_site());
         let trait_functions = trait_functions(item.clone())?;
+
+        let mut generics = item.generics.clone();
+        generics.params.push(GenericParam::Type(TypeParam::from(impl_generic.clone())));
+
         let lifetime_bound = expand_lifetimes_bound(item);
         let super_traits = super_traits_bound(&item.supertraits);
         let where_generics = expand_where_bound_without_where_token(&item.generics);
 
         Ok(quote::quote! {
-         impl<#lifetime #impl_generic> #trait_name for #impl_generic
-             where #impl_generic: #macro_marker_name<#macro_marker_generics> #super_traits,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::A :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::B :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::C :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::D :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::D :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::E :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::F :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::G :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::H :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::I :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::J :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::K :  #lifetime_bound,
-                <#impl_generic as #macro_marker_name<#macro_marker_generics>>::L :  #lifetime_bound,
+         impl #generics #trait_name for #impl_generic
+             where #impl_generic: #delegatable #super_traits,
+                <#impl_generic as #delegatable>::A :  #lifetime_bound,
+                <#impl_generic as #delegatable>::B :  #lifetime_bound,
+                <#impl_generic as #delegatable>::C :  #lifetime_bound,
+                <#impl_generic as #delegatable>::D :  #lifetime_bound,
+                <#impl_generic as #delegatable>::D :  #lifetime_bound,
+                <#impl_generic as #delegatable>::E :  #lifetime_bound,
+                <#impl_generic as #delegatable>::F :  #lifetime_bound,
+                <#impl_generic as #delegatable>::G :  #lifetime_bound,
+                <#impl_generic as #delegatable>::H :  #lifetime_bound,
+                <#impl_generic as #delegatable>::I :  #lifetime_bound,
+                <#impl_generic as #delegatable>::J :  #lifetime_bound,
+                <#impl_generic as #delegatable>::K :  #lifetime_bound,
+                <#impl_generic as #delegatable>::L :  #lifetime_bound,
                 #where_generics
             {
                 #(#trait_functions)*
@@ -84,7 +83,7 @@ fn super_traits_bound(super_traits: &Punctuated<TypeParamBound, Plus>) -> Option
 fn trait_functions(item: ItemTrait) -> syn::Result<Vec<TokenStream2>> {
     let mut trait_fn: Vec<TokenStream2> = Vec::new();
 
-    for fn_token in TraitFnIter::new(item.items).map(|meta| meta.expand_fn()) {
+    for fn_token in TraitFnIter::new(item.items).map(|mut meta| meta.expand_fn()) {
         trait_fn.push(fn_token?);
     }
 
