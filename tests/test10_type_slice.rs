@@ -1,3 +1,5 @@
+#![allow(late_bound_lifetime_arguments)]
+
 use auto_delegate::{delegate, Delegate};
 
 #[delegate]

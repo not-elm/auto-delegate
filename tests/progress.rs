@@ -29,4 +29,7 @@ fn tests() {
     t.pass("tests/test25_self_receiver.rs");
     t.pass("tests/test26_enum_variants.rs");
     t.pass("tests/test27_trait_generics_bound.rs");
+    t.pass("tests/test28_static_method.rs");
+    t.pass("tests/test29_with_fn_generics.rs");
 }
+

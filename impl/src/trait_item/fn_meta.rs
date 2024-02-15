@@ -38,10 +38,9 @@ impl TraitFnMeta {
 
 
     fn expand_delegate_static(&self, delegatable_ident: &TokenStream2) -> syn::Result<TokenStream2> {
-        let inputs = self.expand_inputs();
-        let fn_name = &self.0.sig.ident;
+        let stmt = self.call_stmt();
         Ok(quote! {
-            <Self as #delegatable_ident>::A::#fn_name(#inputs)
+            <Self as #delegatable_ident>::A::#stmt
         })
     }
 
@@ -83,45 +82,57 @@ impl TraitFnMeta {
         }
     }
 
-    fn call(&self) -> TokenStream2 {
+
+    fn call_stmt(&self) -> TokenStream2 {
         let inputs = self.expand_inputs();
         let fn_name = &self.0.sig.ident;
+        let (_, generics, _) = &self.0.sig.generics.split_for_impl();
+        if self.0.sig.generics.params.is_empty() {
+            quote!(#fn_name(#inputs))
+        } else {
+            quote!(#fn_name::#generics(#inputs))
+        }
+    }
+
+    fn call(&self) -> TokenStream2 {
+        let stmt = self.call_stmt();
+        let call = quote!(return t.#stmt;);
         quote! {
             if let Some(t) = m.0{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.1{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.2{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.3{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.4{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.5{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.6{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.7{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.8{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.9{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.10{
-                return t.#fn_name(#inputs);
+                #call
             }
             if let Some(t) = m.11{
-                return t.#fn_name(#inputs);
+                #call
             }
             panic!("unreachable");
         }
