@@ -194,4 +194,4 @@ fn main() {
 ## Todo
 
 - [x] support self-receiver(v0.0.8)
-- [ ] support method without receiver
+- [x] support method without receiver(v0.1.0)
