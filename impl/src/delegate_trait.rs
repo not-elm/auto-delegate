@@ -12,7 +12,7 @@ use crate::syn::syn_generics::{
     expand_generic_param_without_bound,
     expand_where_bound_without_where_token,
 };
-use crate::trait_item::trait_fn_iter::TraitFnIter;
+use crate::trait_item::functions::TraitFunctions;
 
 pub fn expand_delegate_trait(_attr: TokenStream, input: TokenStream) -> TokenStream2 {
     match try_expand_delegate_trait(input) {
@@ -82,8 +82,8 @@ fn super_traits_bound(super_traits: &Punctuated<TypeParamBound, Plus>) -> Option
 
 fn trait_functions(item: ItemTrait) -> syn::Result<Vec<TokenStream2>> {
     let mut trait_fn: Vec<TokenStream2> = Vec::new();
-
-    for fn_token in TraitFnIter::new(item.items).map(|mut meta| meta.expand_fn()) {
+    let delegatable_ident = delegatable_ident_with_generics(item.ident);
+    for fn_token in TraitFunctions::new(item.items).map(|mut meta| meta.expand_fn(&delegatable_ident)) {
         trait_fn.push(fn_token?);
     }
 

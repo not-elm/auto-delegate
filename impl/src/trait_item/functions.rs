@@ -1,13 +1,13 @@
 use syn::TraitItem;
 
-use crate::trait_item::trait_fn_meta::TraitFnMeta;
+use crate::trait_item::fn_meta::TraitFnMeta;
 
-pub struct TraitFnIter {
+pub struct TraitFunctions {
     items: Box<dyn Iterator<Item = TraitItem>>,
 }
 
 
-impl TraitFnIter {
+impl TraitFunctions {
     pub fn new(items: Vec<TraitItem>) -> Self {
         Self {
             items: Box::new(items.into_iter()),
@@ -16,7 +16,7 @@ impl TraitFnIter {
 }
 
 
-impl Iterator for TraitFnIter {
+impl Iterator for TraitFunctions {
     type Item = TraitFnMeta;
 
     fn next(&mut self) -> Option<Self::Item> {
