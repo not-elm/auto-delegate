@@ -33,18 +33,17 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
     let trait_name = expand_trait_name(item);
     let delegatable = delegatable_ident_with_generics(item.ident.clone());
 
-    let expand_impl = || {
-        let impl_generic = proc_macro2::Ident::new("DelegateImpl", Span::call_site());
-        let trait_functions = trait_functions(item.clone())?;
+    let impl_generic = proc_macro2::Ident::new("DelegateImpl", Span::call_site());
+    let trait_functions = trait_functions(item.clone())?;
 
-        let mut generics = item.generics.clone();
-        generics.params.push(GenericParam::Type(TypeParam::from(impl_generic.clone())));
+    let mut generics = item.generics.clone();
+    generics.params.push(GenericParam::Type(TypeParam::from(impl_generic.clone())));
 
-        let lifetime_bound = expand_lifetimes_bound(item);
-        let super_traits = super_traits_bound(&item.supertraits);
-        let where_generics = expand_where_bound_without_where_token(&item.generics);
+    let lifetime_bound = expand_lifetimes_bound(item);
+    let super_traits = super_traits_bound(&item.supertraits);
+    let where_generics = expand_where_bound_without_where_token(&item.generics);
 
-        Ok(quote::quote! {
+    Ok(quote::quote! {
          impl #generics #trait_name for #impl_generic
              where #impl_generic: #delegatable #super_traits,
                 <#impl_generic as #delegatable>::A :  #lifetime_bound,
@@ -64,10 +63,7 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
             {
                 #(#trait_functions)*
             }
-        })
-    };
-
-    expand_impl()
+    })
 }
 
 
