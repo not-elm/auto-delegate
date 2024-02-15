@@ -32,6 +32,7 @@ impl ByField {
 
 pub struct ByFields {
     fields: Box<dyn Iterator<Item=Field>>,
+    index: usize,
 }
 
 
@@ -39,6 +40,7 @@ impl ByFields {
     pub fn new(fields: Fields) -> Self {
         Self {
             fields: Box::new(fields.into_iter()),
+            index: 0,
         }
     }
 }
@@ -49,12 +51,14 @@ impl Iterator for ByFields {
 
     fn next(&mut self) -> Option<Self::Item> {
         let field = self.fields.next()?;
+        let index = self.index;
+        self.index += 1;
 
         if let Some(trait_names) =
             find_to_attribute(&field.attrs).and_then(|by_attr| trait_names(&by_attr))
         {
             Some(ByField {
-                field_name: ident_to_field_name(&field.ident),
+                field_name: ident_to_field_name(&field.ident, index),
                 field_ty: field.ty,
                 trait_names,
             })
@@ -66,11 +70,13 @@ impl Iterator for ByFields {
 
 
 fn ident_to_field_name(
-    ident: &Option<Ident>
+    ident: &Option<Ident>,
+    index: usize
 ) -> TokenStream2 {
     if let Some(ident) = ident {
         ident_to_token_stream(ident)
     } else {
-        quote::quote!(#0)
+        let index = syn::Index::from(index);
+        quote::quote!(#index)
     }
 }

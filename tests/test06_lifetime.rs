@@ -11,7 +11,7 @@ struct Child<'a> {
 
 impl<'a> StringRef<'a> for Child<'a> {
     fn str_ref(&'a self) -> &'a str {
-        self.name.as_ref()
+        self.name
     }
 }
 

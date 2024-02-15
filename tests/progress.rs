@@ -31,5 +31,6 @@ fn tests() {
     t.pass("tests/test27_trait_generics_bound.rs");
     t.pass("tests/test28_static_method.rs");
     t.pass("tests/test29_with_fn_generics.rs");
+    t.pass("tests/test30_unnamed_fields.rs");
 }
 

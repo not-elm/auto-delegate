@@ -4,7 +4,7 @@
 pub use auto_delegate_impl::{delegate, Delegate};
 
 #[doc(hidden)]
-pub struct Marker<A, B, C, D, E, F, G, H, I, J, K, L>(
+pub struct Delegates<A, B, C, D, E, F, G, H, I, J, K, L>(
     pub Option<A>,
     pub Option<B>,
     pub Option<C>,
@@ -19,7 +19,7 @@ pub struct Marker<A, B, C, D, E, F, G, H, I, J, K, L>(
     pub Option<L>,
 );
 
-macro_rules! expand_macro_maker {
+macro_rules! expand_delegatable {
     ($($g: tt), *) => {
         #[doc(hidden)]
         pub trait Delegatable<$(const $g: char = ' ',)*> {
@@ -38,19 +38,19 @@ macro_rules! expand_macro_maker {
 
             fn delegate_by_owned(
                 self
-            ) -> Marker<Self::A, Self::B, Self::C, Self::D, Self::E, Self::F, Self::G, Self::H, Self::I, Self::J, Self::K, Self::L>;
+            ) -> Delegates<Self::A, Self::B, Self::C, Self::D, Self::E, Self::F, Self::G, Self::H, Self::I, Self::J, Self::K, Self::L>;
 
             fn delegate_by_ref(
                 &self
-            ) -> Marker<&Self::A, &Self::B, &Self::C, &Self::D, &Self::E, &Self::F, &Self::G, &Self::H, &Self::I, &Self::J, &Self::K, &Self::L>;
+            ) -> Delegates<&Self::A, &Self::B, &Self::C, &Self::D, &Self::E, &Self::F, &Self::G, &Self::H, &Self::I, &Self::J, &Self::K, &Self::L>;
 
             fn delegate_by_mut(
                 &mut self
-            ) -> Marker<&mut Self::A, &mut Self::B, &mut Self::C, &mut Self::D, &mut Self::E, &mut Self::F, &mut Self::G, &mut Self::H, &mut Self::I, &mut Self::J, &mut Self::K, &mut Self::L>;
+            ) -> Delegates<&mut Self::A, &mut Self::B, &mut Self::C, &mut Self::D, &mut Self::E, &mut Self::F, &mut Self::G, &mut Self::H, &mut Self::I, &mut Self::J, &mut Self::K, &mut Self::L>;
         }
     };
 }
 
-expand_macro_maker!(
+expand_delegatable!(
     A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, AA, AB, AC, AD
 );

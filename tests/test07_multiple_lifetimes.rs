@@ -24,11 +24,11 @@ impl<'a, 'b> Child<'a, 'b> {
 
 impl<'a, 'b> MultipleNames<'a, 'b> for Child<'a, 'b> {
     fn name1(&self) -> &'a str {
-        &self.name1
+        self.name1
     }
 
     fn name2(&self) -> &'b str {
-        &self.name2
+        self.name2
     }
 }
 

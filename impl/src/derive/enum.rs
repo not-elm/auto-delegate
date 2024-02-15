@@ -15,7 +15,7 @@ pub fn try_expand_derive_enum(item_enum: &ItemEnum) -> syn::Result<TokenStream2>
     let expand_impls = trait_names
         .into_iter()
         .map(|trait_name| {
-            expand_impl_macro_marker(trait_name, item_enum, &delegate_by_owned, &delegate_by_ref, &delegate_by_mut)
+            expand_impl_delegatable(trait_name, item_enum, &delegate_by_owned, &delegate_by_ref, &delegate_by_mut)
         });
 
     Ok(quote::quote! {
@@ -24,7 +24,7 @@ pub fn try_expand_derive_enum(item_enum: &ItemEnum) -> syn::Result<TokenStream2>
 }
 
 
-fn expand_impl_macro_marker(
+fn expand_impl_delegatable(
     trait_name: Ident,
     item_enum: &ItemEnum,
     delegate_by_owned: &TokenStream2,
@@ -69,7 +69,7 @@ fn expand_impl_delegate_by_owned(item_enum: &ItemEnum) -> TokenStream2 {
 
     quote::quote! {
         #[inline(always)]
-        fn delegate_by_owned(self) -> auto_delegate::Marker<Self::A, Self::B, Self::C, Self::D, Self::E, Self::F, Self::G, Self::H, Self::I, Self::J, Self::K, Self::L>{
+        fn delegate_by_owned(self) -> auto_delegate::Delegates<Self::A, Self::B, Self::C, Self::D, Self::E, Self::F, Self::G, Self::H, Self::I, Self::J, Self::K, Self::L>{
             match self{
                  #patterns
             }
@@ -83,7 +83,7 @@ fn expand_impl_delegate_by_ref(item_enum: &ItemEnum) -> TokenStream2 {
 
     quote::quote! {
         #[inline(always)]
-        fn delegate_by_ref(&self) -> auto_delegate::Marker<&Self::A, &Self::B, &Self::C, &Self::D, &Self::E, &Self::F, &Self::G, &Self::H, &Self::I, &Self::J, &Self::K, &Self::L>{
+        fn delegate_by_ref(&self) -> auto_delegate::Delegates<&Self::A, &Self::B, &Self::C, &Self::D, &Self::E, &Self::F, &Self::G, &Self::H, &Self::I, &Self::J, &Self::K, &Self::L>{
             match self{
                  #patterns
             }
@@ -97,7 +97,7 @@ fn expand_impl_delegate_by_mut(item_enum: &ItemEnum) -> TokenStream2 {
 
     quote::quote! {
         #[inline(always)]
-        fn delegate_by_mut(&mut self) -> auto_delegate::Marker<&mut Self::A, &mut Self::B, &mut Self::C, &mut Self::D, &mut Self::E, &mut Self::F, &mut Self::G, &mut Self::H, &mut Self::I, &mut Self::J, &mut Self::K, &mut Self::L>{
+        fn delegate_by_mut(&mut self) -> auto_delegate::Delegates<&mut Self::A, &mut Self::B, &mut Self::C, &mut Self::D, &mut Self::E, &mut Self::F, &mut Self::G, &mut Self::H, &mut Self::I, &mut Self::J, &mut Self::K, &mut Self::L>{
             match self{
                  #patterns
             }
@@ -132,40 +132,40 @@ fn pattern_match_fields(item_enum: &ItemEnum) -> TokenStream2 {
 
             match i {
                 0 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(Some(v), None, None, None, None, None, None, None, None, None, None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(Some(v), None, None, None, None, None, None, None, None, None, None, None),
                 },
                 1 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, Some(v), None, None, None, None, None, None, None, None, None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, Some(v), None, None, None, None, None, None, None, None, None, None),
                 },
                 2 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, Some(v),  None, None, None, None, None, None, None, None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, Some(v),  None, None, None, None, None, None, None, None, None),
                 },
                 3 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, Some(v), None, None, None, None, None, None, None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, None, Some(v), None, None, None, None, None, None, None, None),
                 },
                 4 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, Some(v), None, None, None, None, None, None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, None, None, Some(v), None, None, None, None, None, None, None),
                 },
                 5 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, None, Some(v), None, None, None, None, None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, None, None, None, Some(v), None, None, None, None, None, None),
                 },
                 6 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, None, None, Some(v), None, None, None, None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, None, None, None, None, Some(v), None, None, None, None, None),
                 },
                 7 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, None, None, None, Some(v), None, None, None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, None, None, None, None, None, Some(v), None, None, None, None),
                 },
                 8 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, None, None, None, None, Some(v), None, None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, None, None, None, None, None, None, Some(v), None, None, None),
                 },
                 9 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, None, None, None, None, None, Some(v), None, None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, None, None, None, None, None, None, None, Some(v), None, None),
                 },
                 10 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, None, None, None, None, None, None, Some(v), None),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, None, None, None, None, None, None, None, None, Some(v), None),
                 },
                 11 => quote::quote! {
-                    Self::#ident(v) => auto_delegate::Marker(None, None, None, None, None, None, None, None, None, None, None, Some(v)),
+                    Self::#ident(v) => auto_delegate::Delegates(None, None, None, None, None, None, None, None, None, None, None, Some(v)),
                 },
                 _ => panic!("not reachable")
             }
