@@ -1,0 +1,26 @@
+name: Unit Test
+run-name: ${{ github.actor }} is testing
+on: [ push, pull_request ]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt, clippy
+      - name: RustFmt
+        run: cargo +nightly fmt --all -- --check
+      - name: Clippy
+        run: cargo clippy --all --all-features
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Test
+        run: cargo test --all-features --all
