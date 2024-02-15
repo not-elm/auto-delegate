@@ -2,7 +2,7 @@ name: Unit Test
 run-name: ${{ github.actor }} is testing
 on: [ push, pull_request ]
 jobs:
-  lint:
+  clippy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -10,7 +10,7 @@ jobs:
       - name: Toolchain
         uses: dtolnay/rust-toolchain@nightly
         with:
-          components: rustfmt, clippy
+          components: clippy
       - name: Clippy
         run: cargo clippy --all --all-features
   test:
