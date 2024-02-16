@@ -61,8 +61,32 @@ harness = false
 
 
 [[test]]
-name = "tests"
+name = "general"
 path = "tests/progress.rs"
+
+[[test]]
+name = "args"
+path = "tests/args/progress.rs"
+
+[[test]]
+name = "enum"
+path = "tests/enum/progress.rs"
+
+[[test]]
+name = "lifetime"
+path = "tests/lifetime/progress.rs"
+
+[[test]]
+name = "struct"
+path = "tests/struct/progress.rs"
+
+[[test]]
+name = "generics"
+path = "tests/generics/progress.rs"
+
+[[test]]
+name = "async_trait"
+path = "tests/async_trait/progress.rs"
 
 
 [dependencies]

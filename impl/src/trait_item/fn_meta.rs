@@ -86,11 +86,12 @@ impl TraitFnMeta {
     fn call_stmt(&self) -> TokenStream2 {
         let inputs = self.expand_inputs();
         let fn_name = &self.0.sig.ident;
-        let (_, generics, _) = &self.0.sig.generics.split_for_impl();
+        let asyncness = self.0.sig.asyncness.map(|_|quote!(.await));
         if self.0.sig.generics.params.is_empty() {
-            quote!(#fn_name(#inputs))
+            quote!(#fn_name(#inputs)#asyncness)
         } else {
-            quote!(#fn_name::#generics(#inputs))
+            let (_, generics, _) = &self.0.sig.generics.split_for_impl();
+            quote!(#fn_name::#generics(#inputs)#asyncness)
         }
     }
 

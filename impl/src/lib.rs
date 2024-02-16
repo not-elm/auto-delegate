@@ -12,6 +12,7 @@ mod delegatable;
 mod syn;
 mod trait_item;
 mod attribute;
+mod async_trait;
 
 
 /// The trait given this attribute are eligible for delegation.
@@ -27,7 +28,7 @@ mod attribute;
 #[proc_macro_attribute]
 pub fn delegate(attr: TokenStream, input: TokenStream) -> TokenStream {
     let output: proc_macro2::TokenStream = expand_delegate_trait(attr, input.clone());
-    expand_join(input, output)
+    output.into()
 }
 
 
@@ -251,23 +252,11 @@ pub fn derive_delegate(input: TokenStream) -> TokenStream {
 }
 
 
-fn expand_join(input: TokenStream, output: proc_macro2::TokenStream) -> TokenStream {
-    let input = proc_macro2::TokenStream::from(input);
-
-    let expand = quote::quote! {
-        #input
-        #output
-    };
-
-    expand.into()
-}
-
-
 pub(crate) fn intersperse(
     separator: TokenStream2,
     iter: impl Iterator<Item=TokenStream2>) -> Vec<TokenStream2> {
     let mut tokens = Vec::<TokenStream2>::new();
-    for token in iter{
+    for token in iter {
         tokens.push(token);
         tokens.push(separator.clone());
     }

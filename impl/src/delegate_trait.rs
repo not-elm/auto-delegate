@@ -1,11 +1,13 @@
 use proc_macro::TokenStream;
 
 use proc_macro2::Span;
-use syn::{GenericParam, ItemTrait, LifetimeParam, TypeParam, TypeParamBound};
+use quote::quote;
+use syn::{Attribute, GenericParam, ItemTrait, LifetimeParam, TypeParam, TypeParamBound};
 use syn::__private::TokenStream2;
 use syn::punctuated::Punctuated;
 use syn::token::Plus;
 
+use crate::async_trait::AsyncTraitArgs;
 use crate::delegatable::delegatable_ident_with_generics;
 use crate::intersperse;
 use crate::syn::syn_generics::{
@@ -23,13 +25,12 @@ pub fn expand_delegate_trait(_attr: TokenStream, input: TokenStream) -> TokenStr
 
 
 fn try_expand_delegate_trait(input: TokenStream) -> syn::Result<TokenStream2> {
-    let input_trait = syn::parse::<syn::ItemTrait>(input)?;
-
-    expand_impl_macro(&input_trait)
+    let mut item = syn::parse::<syn::ItemTrait>(input)?;
+    expand_impl_trait(&mut item)
 }
 
 
-fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
+fn expand_impl_trait(item: &mut ItemTrait) -> syn::Result<TokenStream2> {
     let trait_name = expand_trait_name(item);
     let delegatable = delegatable_ident_with_generics(item.ident.clone());
 
@@ -42,10 +43,15 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
     let lifetime_bound = expand_lifetimes_bound(item);
     let super_traits = super_traits_bound(&item.supertraits);
     let where_generics = expand_where_bound_without_where_token(&item.generics);
+    let async_trait_attr = async_trait_attr(item);
+    let send = send_bound(&async_trait_attr);
 
     Ok(quote::quote! {
+         #item
+
+         #async_trait_attr
          impl #generics #trait_name for #impl_generic
-             where #impl_generic: #delegatable #super_traits,
+             where #impl_generic: #delegatable #super_traits #send,
                 <#impl_generic as #delegatable>::A :  #lifetime_bound,
                 <#impl_generic as #delegatable>::B :  #lifetime_bound,
                 <#impl_generic as #delegatable>::C :  #lifetime_bound,
@@ -66,6 +72,30 @@ fn expand_impl_macro(item: &ItemTrait) -> syn::Result<TokenStream2> {
     })
 }
 
+
+fn async_trait_attr(item: &ItemTrait) -> Option<&Attribute> {
+    item.attrs.iter().find(|attr| {
+        attr
+            .path()
+            .segments
+            .first()
+            .map_or(false, |segment| segment.ident == "async_trait")
+    })
+}
+
+fn send_bound(async_trait_attr: &Option<&Attribute>) -> Option<TokenStream2> {
+    let attr = async_trait_attr.as_ref()?;
+    if let Ok(list) = attr.meta.require_list() {
+        let args = syn::parse::<AsyncTraitArgs>(list.tokens.clone().into()).unwrap();
+        if args.local {
+            None
+        } else {
+            Some(quote!(+ Send))
+        }
+    } else {
+        Some(quote!(+ Send))
+    }
+}
 
 fn super_traits_bound(super_traits: &Punctuated<TypeParamBound, Plus>) -> Option<TokenStream2> {
     if super_traits.is_empty() {
