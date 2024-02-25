@@ -1,7 +1,7 @@
 [package]
 name = "auto-delegate"
 authors = ["elm <elmprograminfo@gmail.com>"]
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/elm-register/auto-delegate"
@@ -87,10 +87,6 @@ path = "tests/generics/progress.rs"
 [[test]]
 name = "async_trait"
 path = "tests/async_trait/progress.rs"
-
-[[test]]
-name = "t"
-path = "tests/async_trait/test05_immutable_self_receiver.rs"
 
 
 [dependencies]
