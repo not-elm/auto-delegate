@@ -1,7 +1,7 @@
 [package]
 name = "auto-delegate"
-authors = ["elm-register <elmprograminfo@gmail.com>"]
-version = "0.1.0"
+authors = ["elm <elmprograminfo@gmail.com>"]
+version = "0.1.1"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/elm-register/auto-delegate"
@@ -90,7 +90,7 @@ path = "tests/async_trait/progress.rs"
 
 
 [dependencies]
-auto-delegate-impl = { version = "0.1.0", path = "impl" }
+auto-delegate-impl = { version = "0.1.1", path = "impl" }
 
 
 [dev-dependencies]
