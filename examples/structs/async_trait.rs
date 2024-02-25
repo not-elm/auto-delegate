@@ -1,55 +1,50 @@
+use std::path::Path;
 use async_trait::async_trait;
 
 use auto_delegate::{delegate, Delegate};
 
-pub struct EmailAddress(String);
-
-impl EmailAddress {
-    #[allow(unused)]
-    pub fn raw(&self) -> &str {
-        self.0.as_str()
-    }
-}
-
-
-impl Default for EmailAddress {
-    fn default() -> Self {
-        Self(String::from("rust@gmail.com"))
-    }
-}
-
-
-#[async_trait]
 #[delegate]
-pub trait EmailReadable {
-    async fn read_email<'a>(&'a self) -> &'a EmailAddress;
+trait ReadFile {
+    async fn read_file(&self, path: impl AsRef<Path>) -> String;
 }
 
+
+
+#[delegate]
+#[async_trait]
+trait ReadFileBufLen {
+    async fn read_file_buf_len(&self, path: impl AsRef<Path> + Send) -> usize;
+}
 
 #[derive(Default)]
-pub struct EmailReader {
-    email: EmailAddress,
+struct Io;
+
+impl ReadFile for Io{
+    async fn read_file(&self, path: impl AsRef<Path>) -> String {
+        tokio::fs::read_to_string(path).await.unwrap()
+    }
 }
 
 
 #[async_trait]
-impl EmailReadable for EmailReader {
-    async fn read_email<'a>(&'a self) -> &'a EmailAddress {
-        &self.email
+impl ReadFileBufLen for Io {
+    async fn read_file_buf_len(&self, path: impl AsRef<Path> + Send) -> usize {
+        tokio::fs::read_to_string(path).await.unwrap().len()
     }
 }
-
 
 #[derive(Default, Delegate)]
 struct Parent {
-    #[to(EmailReadable)]
-    child: EmailReader,
+    #[to(ReadFile, ReadFileBufLen)]
+    child: Io,
 }
 
 
 #[tokio::main]
 async fn main() {
+    const PATH: &str = "examples/structs/async_trait.txt";
     let parent = Parent::default();
-
-    assert_eq!(parent.read_email().await.raw(), "rust@gmail.com");
+    
+    assert_eq!(parent.read_file(PATH).await, "HELLO");
+    assert_eq!(parent.read_file_buf_len(PATH).await, 5);
 }

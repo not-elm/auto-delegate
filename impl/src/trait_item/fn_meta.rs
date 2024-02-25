@@ -13,6 +13,12 @@ impl TraitFnMeta {
         Self(item_fn)
     }
 
+    pub fn has_immutable_self_ref_receiver(&self) -> bool {
+        self.0.sig.receiver().map_or(false, |recv| {
+            recv.reference.is_some() && recv.mutability.is_none()
+        })
+    }
+
     pub fn expand_fn(&mut self, delegatable_ident: &TokenStream2) -> syn::Result<TokenStream2> {
         let stmt = self.delegate_stmt(delegatable_ident)?;
 
@@ -86,7 +92,7 @@ impl TraitFnMeta {
     fn call_stmt(&self) -> TokenStream2 {
         let inputs = self.expand_inputs();
         let fn_name = &self.0.sig.ident;
-        let asyncness = self.0.sig.asyncness.map(|_|quote!(.await));
+        let asyncness = self.0.sig.asyncness.map(|_| quote!(.await));
         if self.0.sig.generics.params.is_empty() {
             quote!(#fn_name(#inputs)#asyncness)
         } else {

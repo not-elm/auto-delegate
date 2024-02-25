@@ -34,7 +34,7 @@ path = "./examples/structs/super_trait.rs"
 
 
 [[example]]
-name = "aync_trait"
+name = "async_trait"
 path = "./examples/structs/async_trait.rs"
 
 
@@ -88,6 +88,10 @@ path = "tests/generics/progress.rs"
 name = "async_trait"
 path = "tests/async_trait/progress.rs"
 
+[[test]]
+name = "t"
+path = "tests/async_trait/test05_immutable_self_receiver.rs"
+
 
 [dependencies]
 auto-delegate-impl = { version = "0.1.1", path = "impl" }
@@ -96,5 +100,5 @@ auto-delegate-impl = { version = "0.1.1", path = "impl" }
 [dev-dependencies]
 trybuild = "1.0.80"
 criterion = { version = "0.5.1", features = ["html_reports"] }
-async-trait = "0.1.68"
+async-trait = "0.1.77"
 tokio = { version = "1.28.0", features = ["full"] }

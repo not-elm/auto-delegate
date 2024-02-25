@@ -2,7 +2,7 @@ use proc_macro::TokenStream;
 
 use proc_macro2::Span;
 use quote::quote;
-use syn::{Attribute, GenericParam, ItemTrait, LifetimeParam, TypeParam, TypeParamBound};
+use syn::{Attribute, GenericParam, ItemTrait, LifetimeParam, TraitItem, TypeParam, TypeParamBound};
 use syn::__private::TokenStream2;
 use syn::punctuated::Punctuated;
 use syn::token::Plus;
@@ -44,14 +44,14 @@ fn expand_impl_trait(item: &mut ItemTrait) -> syn::Result<TokenStream2> {
     let super_traits = super_traits_bound(&item.supertraits);
     let where_generics = expand_where_bound_without_where_token(&item.generics);
     let async_trait_attr = async_trait_attr(item);
-    let send = send_bound(&async_trait_attr);
+    let send_and_sync = send_and_sync_bound(item, &async_trait_attr);
 
     Ok(quote::quote! {
          #item
 
          #async_trait_attr
          impl #generics #trait_name for #impl_generic
-             where #impl_generic: #delegatable #super_traits #send,
+             where #impl_generic: #delegatable #super_traits #send_and_sync,
                 <#impl_generic as #delegatable>::A :  #lifetime_bound,
                 <#impl_generic as #delegatable>::B :  #lifetime_bound,
                 <#impl_generic as #delegatable>::C :  #lifetime_bound,
@@ -83,7 +83,7 @@ fn async_trait_attr(item: &ItemTrait) -> Option<&Attribute> {
     })
 }
 
-fn send_bound(async_trait_attr: &Option<&Attribute>) -> Option<TokenStream2> {
+fn send_and_sync_bound(item: &ItemTrait, async_trait_attr: &Option<&Attribute>) -> Option<TokenStream2> {
     let attr = async_trait_attr.as_ref()?;
     if let Ok(list) = attr.meta.require_list() {
         let args = syn::parse::<AsyncTraitArgs>(list.tokens.clone().into()).unwrap();
@@ -92,7 +92,9 @@ fn send_bound(async_trait_attr: &Option<&Attribute>) -> Option<TokenStream2> {
         } else {
             Some(quote!(+ Send))
         }
-    } else {
+    }else if has_immutable_self_receiver(item.items.clone()) {
+        Some(quote ! ( + Send + Sync))
+    }else {
         Some(quote!(+ Send))
     }
 }
@@ -103,6 +105,11 @@ fn super_traits_bound(super_traits: &Punctuated<TypeParamBound, Plus>) -> Option
     } else {
         Some(quote::quote!(+ #super_traits))
     }
+}
+
+
+fn has_immutable_self_receiver(items: Vec<TraitItem>) -> bool {
+    TraitFunctions::new(items).any(|meta| meta.has_immutable_self_ref_receiver())
 }
 
 
