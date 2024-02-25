@@ -3,6 +3,13 @@
 
 ## [released]
 
+## [0.1.2] - 2024-02-25
+
+### Bug Fix
+
+- Fixed a bug that caused the definition of traits with immutable references as receivers to fail.
+
+
 ## [0.1.1] - 2024-02-25
 
 ### Bug Fix
