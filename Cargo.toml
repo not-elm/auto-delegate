@@ -85,9 +85,12 @@ name = "generics"
 path = "tests/generics/progress.rs"
 
 [[test]]
+name = "associated_type"
+path = "tests/associated_type/progress.rs"
+
+[[test]]
 name = "async_trait"
 path = "tests/async_trait/progress.rs"
-
 
 [dependencies]
 auto-delegate-impl = { version = "0.1.1", path = "impl" }

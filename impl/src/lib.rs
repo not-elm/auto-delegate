@@ -10,7 +10,7 @@ mod delegate_trait;
 mod ident;
 mod delegatable;
 mod syn;
-mod trait_item;
+mod trait_meta;
 mod attribute;
 mod async_trait;
 
