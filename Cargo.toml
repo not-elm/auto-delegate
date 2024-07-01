@@ -1,7 +1,7 @@
 [package]
 name = "auto-delegate"
-authors = ["elm <elmprograminfo@gmail.com>"]
-version = "0.1.2"
+authors = ["notelm <elmprograminfo@gmail.com>"]
+version = "0.1.3"
 edition = "2021"
 readme = "README.md"
 repository = "https://github.com/elm-register/auto-delegate"
@@ -11,54 +11,44 @@ categories = ["no-std"]
 documentation = "https://docs.rs/auto-delegate/"
 description = "Auto delegate allows you that automatic impl of traits and delegate their handling to child members."
 
-
 [workspace]
 members = [
     "impl"
 ]
 
-
 [[example]]
 name = "multiple_traits_and_fields"
 path = "./examples/structs/multiple_traits_and_fields.rs"
-
 
 [[example]]
 name = "new_type"
 path = "./examples/structs/new_type.rs"
 
-
 [[example]]
 name = "super_trait"
 path = "./examples/structs/super_trait.rs"
-
 
 [[example]]
 name = "async_trait"
 path = "./examples/structs/async_trait.rs"
 
-
 [[example]]
 name = "enum_one_trait"
 path = "./examples/enums/one_trait.rs"
 
-
 [[example]]
 name = "enum_super_trait"
 path = "./examples/enums/super_trait.rs"
-
 
 [[bench]]
 name = "cmp_handwritten_struct"
 path = "benches/cmp_handwritten_struct.rs"
 harness = false
 
-
 [[bench]]
 name = "cmp_handwritten_enum"
 path = "benches/cmp_handwritten_enum.rs"
 harness = false
-
 
 [[test]]
 name = "general"
@@ -94,7 +84,6 @@ path = "tests/async_trait/progress.rs"
 
 [dependencies]
 auto-delegate-impl = { version = "0.1.1", path = "impl" }
-
 
 [dev-dependencies]
 trybuild = "1.0.80"

@@ -195,3 +195,4 @@ fn main() {
 
 - [x] support self-receiver(v0.0.8)
 - [x] support method without receiver(v0.1.0)
+- [ ] support trait fn which returns impl type. 
